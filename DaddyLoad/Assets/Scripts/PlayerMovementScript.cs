@@ -10,6 +10,10 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
 
     public float flightSpeed;
     public float runSpeed;
+    public float maxFallSpeed;
+    public float maxRiseSpeed;
+    public float thrustForce;
+    public float gravity;
     private float horizontalMove;
 
     private bool isJumping = false;
@@ -49,7 +53,7 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         transform.position += new Vector3(horizontalMove, 0, 0);
 
 
-        if (Input.GetKey("w"))
+        /*if (Input.GetKey("w"))
         {
             transform.position += new Vector3(0, flightSpeed, 0);
             isJumping = true;
@@ -58,8 +62,15 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         if (!Input.GetKey("w"))
         {
             isJumping = false;
-        }
-        if (Input.GetKey("s")) transform.position += new Vector3(0, -0.1f, 0);
+        }*/
+
+        isJumping = Input.GetKey("w");
+
+        rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
+        if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass, 0));
+
+        if (rb.velocity.y < -maxFallSpeed) rb.velocity = new Vector3(rb.velocity.x, -maxFallSpeed, 0);
+        if (rb.velocity.y > maxRiseSpeed) rb.velocity = new Vector3(rb.velocity.x, maxRiseSpeed, 0);
 
     }
 

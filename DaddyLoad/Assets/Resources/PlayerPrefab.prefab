@@ -307,6 +307,10 @@ MonoBehaviour:
   animator: {fileID: 6515307825572845257}
   flightSpeed: 0.1
   runSpeed: 0.1
+  maxFallSpeed: 12
+  maxRiseSpeed: 100
+  thrustForce: 12.5
+  gravity: 6
 --- !u!114 &1445986612959238164
 MonoBehaviour:
   m_ObjectHideFlags: 0
