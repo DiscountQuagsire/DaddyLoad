@@ -11,7 +11,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: e4dab505eb42b6a45b496d54d9f429e2,
+      objectReference: {fileID: 21300000, guid: bea1ea2e502c27744b39982de5364d7b,
         type: 3}
     - target: {fileID: 795421835940874736, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
@@ -21,22 +21,22 @@ PrefabInstance:
     - target: {fileID: 795421835940874736, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.6698113
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 795421835940874736, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.5582617
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 795421835940874736, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.19272871
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1849677089267487887, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
       propertyPath: m_Name
-      value: Dirt
+      value: Dirt Variant
       objectReference: {fileID: 0}
     - target: {fileID: 2890721784810565173, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
@@ -92,6 +92,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2890721784810565173, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2890721784810565173, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d3d6dfea27e67f40affe45f3903bbe0, type: 3}

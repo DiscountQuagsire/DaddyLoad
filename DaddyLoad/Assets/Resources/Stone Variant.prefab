@@ -62,25 +62,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1931458983381393492, guid: e9dbab2c1b61c3548a7482c72a366aa5,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1931458983381393492, guid: e9dbab2c1b61c3548a7482c72a366aa5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3133199192714189550, guid: e9dbab2c1b61c3548a7482c72a366aa5,
         type: 3}
       propertyPath: m_Name
-      value: Stone
+      value: Stone Variant
       objectReference: {fileID: 0}
     - target: {fileID: 4168614037710096273, guid: e9dbab2c1b61c3548a7482c72a366aa5,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.6698113
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4168614037710096273, guid: e9dbab2c1b61c3548a7482c72a366aa5,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.6698113
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4168614037710096273, guid: e9dbab2c1b61c3548a7482c72a366aa5,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.6698113
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4168614037710096273, guid: e9dbab2c1b61c3548a7482c72a366aa5,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5c5ec9049e7228e4e82db67a1c6ca35b,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9dbab2c1b61c3548a7482c72a366aa5, type: 3}
