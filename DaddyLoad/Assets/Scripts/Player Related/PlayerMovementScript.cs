@@ -60,7 +60,8 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) return;
         //transform.velocity += new Vector3(horizontalMove, 0, 0);
-        rb.velocity = new Vector2(horizontalMove * runSpeed, 0);
+        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        rb.velocity = new Vector2(horizontalMove * runSpeed, 0.01f);
         if (horizontalMove == 0) rb.velocity = Vector2.zero;
 
         if (Input.GetKey("s")) DrillDown();
@@ -77,10 +78,6 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
 
         if (rb.velocity.y < -maxFallSpeed) rb.velocity = new Vector3(rb.velocity.x, -maxFallSpeed, 0);
         if (rb.velocity.y > maxRiseSpeed) rb.velocity = new Vector3(rb.velocity.x, maxRiseSpeed, 0);
-
-        if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass, 0));
-
-
     }
 
     private void Flip()

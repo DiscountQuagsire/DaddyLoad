@@ -371,8 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 6515307825572845257}
-  flightSpeed: 0.1
-  runSpeed: 0.1
+  runSpeed: 2.5
   maxFallSpeed: 6
   maxRiseSpeed: 4
   thrustForce: 25
