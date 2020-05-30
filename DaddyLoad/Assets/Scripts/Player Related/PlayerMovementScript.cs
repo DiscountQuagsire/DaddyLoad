@@ -59,10 +59,8 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-        //transform.velocity += new Vector3(horizontalMove, 0, 0);
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-        rb.velocity = new Vector2(horizontalMove * runSpeed, 0.01f);
-        if (horizontalMove == 0) rb.velocity = Vector2.zero;
+        transform.position += new Vector3(horizontalMove, 0, 0);
+
 
         if (Input.GetKey("s")) DrillDown();
         if (!Input.GetKey("s"))
