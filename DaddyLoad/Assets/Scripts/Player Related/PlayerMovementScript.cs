@@ -111,6 +111,6 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     [PunRPC]
     public void destroyBlock(string playerID, int x, int y)
     {
-        GameObject.Find("MapGenerator").GetComponent<FileManager>().registerBlockDestroy(x, y);
+        GameObject.Find("FileManager").GetComponent<FileManager>().registerBlockDestroy(x, y);
     }
 }
