@@ -28,7 +28,7 @@ public class Block : MonoBehaviourPunCallbacks
     private void OnDestroy()
     {
         //Give drops to player
-        player.GetComponent<PlayerMovementScript>().destroyBlock("fgt", (int)transform.position.x, (int)transform.position.y);
+        player.GetComponent<PlayerMovementScript>().photonView.RPC("destroyBlock",RpcTarget.All, "fgt", (int)transform.position.x, (int)transform.position.y);
         
     }
 
