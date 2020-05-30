@@ -60,20 +60,23 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-        transform.position += new Vector3(horizontalMove, 0, 0);
-
+        if (!isDrilling)
+        {
+            transform.position += new Vector3(horizontalMove, 0, 0);
+            if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass * 20, 0));
+        }
+      
 
         if (Input.GetKey("s")) DrillDown();
         if (!Input.GetKey("s"))
         {
             animator.SetBool("IsDrilling", false);
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         isJumping = Input.GetKey("w");
-
+        
         rb.AddForce(new Vector3(0, -gravity * rb.mass * 20, 0));
-        if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass * 20, 0));
+        
 
         if (rb.velocity.y < -maxFallSpeed) rb.velocity = new Vector3(rb.velocity.x, -maxFallSpeed, 0);
         if (rb.velocity.y > maxRiseSpeed) rb.velocity = new Vector3(rb.velocity.x, maxRiseSpeed, 0);
@@ -95,13 +98,19 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         {
             GameObject block = hit.collider.gameObject;
             animator.SetBool("IsDrilling", true);
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
             isJumping = false;
-            hit.collider.gameObject.GetComponent<Block>().takeDamage(drillDamage, "fgt");
+            hit.collider.gameObject.GetComponent<Block>().takeDamage(drillDamage, gameObject);
         }
         else
         {
             return;
         }
+    }
+
+
+    [PunRPC]
+    public void destroyBlock(string playerID, int x, int y)
+    {
+        GameObject.Find("MapGenerator").GetComponent<FileManager>().registerBlockDestroy(x, y);
     }
 }

@@ -7,40 +7,35 @@ public class Block : MonoBehaviourPunCallbacks
 {
     public float maxHealth;
     private float health;
-    private string playerID;
+    private GameObject player;
 
-    // Start is called before the first frame update
+
 
     void Start()
     {
         health = maxHealth;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if (health <= 0)
         {
-
             Destroy(gameObject);
         }
     }
 
     private void OnDestroy()
     {
-        //Give drops to player with playerID
-        photonView.RPC("sendMessage", RpcTarget.All);
+        //Give drops to player
+        player.GetComponent<PlayerMovementScript>().destroyBlock("fgt", (int)transform.position.x, (int)transform.position.y);
+        
     }
 
-    public void takeDamage(float damage, string ID)
+    public void takeDamage(float damage, GameObject p)
     {
-        playerID = ID;
+        player = p;
         health -= damage;
     }
 
-    [PunRPC]
-    void sendMessage()
-    {
-        Debug.Log(gameObject.name + " destroyed at" + transform.position + " by " + playerID);
-    }
 }
