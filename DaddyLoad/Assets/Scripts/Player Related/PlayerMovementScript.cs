@@ -39,7 +39,8 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         if (!photonView.IsMine) return;
         if (Input.GetKeyDown("g")) GetComponent<BoxCollider2D>().enabled = !GetComponent<BoxCollider2D>().enabled;
 
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        if (!isDrilling) horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        if (isDrilling) horizontalMove = 0;
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
         animator.SetBool("IsJumping", isJumping);
 
@@ -63,7 +64,10 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         if (!isDrilling)
         {
             transform.position += new Vector3(horizontalMove, 0, 0);
+            if ((Input.GetKey("a") ^ Input.GetKey("d")) && !isJumping) DrillSide();
+
             if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass * 20, 0));
+            
         }
       
 
@@ -107,6 +111,22 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         }
     }
 
+    private void DrillSide()
+    {
+        Vector2 direction = front.right;
+        if (!isTurnedRight) direction = -direction;
+        RaycastHit2D hit = Physics2D.Raycast(front.position, direction, 0.4f, isGround);
+        Debug.DrawRay(front.position, direction);
+        if (hit.collider != null)
+        {
+            GameObject block = hit.collider.gameObject;
+            hit.collider.gameObject.GetComponent<Block>().takeDamage(drillDamage, gameObject);
+        }
+        else
+        {
+            return;
+        }
+    }
 
     [PunRPC]
     public void destroyBlock(string playerID, int x, int y)
