@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Block : MonoBehaviour
+public class Block : MonoBehaviourPunCallbacks
 {
     public float maxHealth;
     private float health;
-    public GameObject deathEffect;
     private string playerID;
 
     // Start is called before the first frame update
@@ -19,22 +19,28 @@ public class Block : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (health >= 0)
+        if (health <= 0)
         {
 
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 
     private void OnDestroy()
-    {            
+    {
         //Give drops to player with playerID
-        Debug.Log(gameObject.name + " destroyed at" + transform.position);
+        photonView.RPC("sendMessage", RpcTarget.All);
     }
 
     public void takeDamage(float damage, string ID)
     {
         playerID = ID;
         health -= damage;
+    }
+
+    [PunRPC]
+    void sendMessage()
+    {
+        Debug.Log(gameObject.name + " destroyed at" + transform.position + " by " + playerID);
     }
 }

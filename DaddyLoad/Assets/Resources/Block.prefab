@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 795421835940874736}
   - component: {fileID: -4439299832032672358}
   - component: {fileID: 6388018556155893287}
+  - component: {fileID: 1757150813365312874}
   m_Layer: 12
   m_Name: Block
   m_TagString: Untagged
@@ -121,3 +122,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d1d6a4b4ec2294eb8c5f1fd6159526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 0
+  deathEffect: {fileID: 0}
+--- !u!114 &1757150813365312874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849677089267487887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

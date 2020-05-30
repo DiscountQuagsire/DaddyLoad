@@ -15,6 +15,7 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     public float thrustForce;
     public float gravity;
     private float horizontalMove;
+    public float drillDamage;
 
     public Transform bottom;
     public Transform front;
@@ -96,6 +97,7 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
             animator.SetBool("IsDrilling", true);
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
             isJumping = false;
+            hit.collider.gameObject.GetComponent<Block>().takeDamage(drillDamage, "fgt");
         }
         else
         {

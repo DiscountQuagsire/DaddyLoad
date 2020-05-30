@@ -376,6 +376,7 @@ MonoBehaviour:
   maxRiseSpeed: 4
   thrustForce: 25
   gravity: 14
+  drillDamage: 1
   bottom: {fileID: 6610916554703116441}
   front: {fileID: 3465594411187013566}
   isGround:
