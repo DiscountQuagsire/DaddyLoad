@@ -14,7 +14,7 @@ public class GameSetupScript : MonoBehaviour
 
     private void CreatePlayer()
     {
-        PhotonNetwork.Instantiate("PlayerPrefab", new Vector3(Random.Range(0, 3), 1, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate("PlayerPrefab", new Vector3(0, 3.5f, 0), Quaternion.identity);
         Debug.Log("Player Created");
     }
 

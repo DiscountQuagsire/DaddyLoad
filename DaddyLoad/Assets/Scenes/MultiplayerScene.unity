@@ -325,7 +325,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dirt: {fileID: 3133199192714189550, guid: e9dbab2c1b61c3548a7482c72a366aa5, type: 3}
   stone: {fileID: 1738695510939475531, guid: 51022dcb348a9ba4fa62aadfe4879e8c, type: 3}
-  seed: 0
+  gold: {fileID: 7264770856413584120, guid: a448d94ba4f22154b80f424519fd7d37, type: 3}
+  seed: 12345
 --- !u!4 &2074685766
 Transform:
   m_ObjectHideFlags: 0

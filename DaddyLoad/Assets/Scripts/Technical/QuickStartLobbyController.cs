@@ -9,11 +9,13 @@ public class QuickStartLobbyController : MonoBehaviourPunCallbacks
 
     [SerializeField]
     private GameObject quickStartButton;
+    public bool autoStart;
 
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
         quickStartButton.SetActive(true);
+        if (autoStart) QuickStart();
     }
 
     public void QuickStart()

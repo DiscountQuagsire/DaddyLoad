@@ -29,6 +29,8 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     private void Update()
     {
         if (!photonView.IsMine) return;
+        if (Input.GetKeyDown("g")) GetComponent<BoxCollider2D>().enabled = !GetComponent<BoxCollider2D>().enabled;
+
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
         animator.SetBool("IsJumping", isJumping);
@@ -52,18 +54,6 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         if (!photonView.IsMine) return;
         transform.position += new Vector3(horizontalMove, 0, 0);
 
-
-        /*if (Input.GetKey("w"))
-        {
-            transform.position += new Vector3(0, flightSpeed, 0);
-            isJumping = true;
-        }
-
-        if (!Input.GetKey("w"))
-        {
-            isJumping = false;
-        }*/
-
         isJumping = Input.GetKey("w");
 
         rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
@@ -71,6 +61,9 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
 
         if (rb.velocity.y < -maxFallSpeed) rb.velocity = new Vector3(rb.velocity.x, -maxFallSpeed, 0);
         if (rb.velocity.y > maxRiseSpeed) rb.velocity = new Vector3(rb.velocity.x, maxRiseSpeed, 0);
+
+        if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass, 0));
+
 
     }
 
