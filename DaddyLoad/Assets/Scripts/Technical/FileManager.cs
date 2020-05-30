@@ -22,8 +22,8 @@ public class FileManager : MonoBehaviour
     public void registerBlockDestroy(int x, int y)
     {
    
-        File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "/" + y + "\n");
-        Debug.Log("Registered block destroy at: " + x + ", " + y);
+        File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "/" + -y + "\n");
+        Debug.Log("Registered block destroy at: " + x + ", " + -y);
     }
 
     public void loadEmptyBlocks()
