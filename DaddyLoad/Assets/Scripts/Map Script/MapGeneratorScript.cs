@@ -17,6 +17,7 @@ public class MapGeneratorScript : MonoBehaviour
     public void Start()
     {
         generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, 25);
+
     }
 
     public void Update()
@@ -40,7 +41,6 @@ public class MapGeneratorScript : MonoBehaviour
         for (int x = xStart; x < xStart + width; x++)
         for (int y = 0; y < yMin; y++)
         {
-            Debug.Log("building a block");
             Instantiate(computeBlockAt(x, y, seed), new Vector3(x, -y, 0), Quaternion.identity);
         }
             
@@ -73,11 +73,8 @@ public class Hash
         double x1 = Math.Pow(Math.Pow(x, 8) + seed * 8, 1f / 2f) / (modX64 + 2);
         double y1 = Math.Pow(Math.Pow(y, 7) + seed * 3.5, 1f / 3f) / (modY59 + 2);
         double big = Math.E * Math.Pow(x1, 0.5) * Math.Pow(y1, 0.5) / seed;
-        Debug.Log("big1: " + big);
         big *= (this.getFullDecimal(x1 * y1 * Math.Pow(big, 0.5)) + modSeed8) * rootSeed;
-        Debug.Log("big2: " + big);
         if (isLeft) big *= Math.Pow(seed / 18.5, 19f / 41f);
-        Debug.Log("big3: " + big);
         v = int.Parse(this.getPart(big));
         //Debug.Log("x: " + x + ", y: " + y + ", v: " + v);
     }
@@ -90,7 +87,6 @@ public class Hash
 
     private string getPart(double input)
     {
-        Debug.Log("in getpart, input:" + input);
         string s = input.ToString();
         int index = s.IndexOf(".");
         try { return reverseString(s.Substring(index + 1, 5));} catch (Exception e){}
