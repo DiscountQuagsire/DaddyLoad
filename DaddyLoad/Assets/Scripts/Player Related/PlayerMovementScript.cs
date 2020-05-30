@@ -75,6 +75,7 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         if (!Input.GetKey("s"))
         {
             animator.SetBool("IsDrilling", false);
+            isDrilling = false;
         }
 
         isJumping = Input.GetKey("w");
@@ -102,6 +103,7 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         {
             GameObject block = hit.collider.gameObject;
             animator.SetBool("IsDrilling", true);
+            isDrilling = true;
             isJumping = false;
             hit.collider.gameObject.GetComponent<Block>().takeDamage(drillDamage, gameObject);
         }
