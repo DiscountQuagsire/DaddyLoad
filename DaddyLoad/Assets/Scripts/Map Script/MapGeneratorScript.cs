@@ -17,7 +17,6 @@ public class MapGeneratorScript : MonoBehaviour
     public void Start()
     {
         generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, 25);
-
     }
 
     public void Update()
@@ -38,9 +37,11 @@ public class MapGeneratorScript : MonoBehaviour
 
     public void generateMap(int xStart, int width, int yMin)
     {
+        FileManager fm = GameObject.Find("FileManager").GetComponent<FileManager>();
         for (int x = xStart; x < xStart + width; x++)
         for (int y = 0; y < yMin; y++)
         {
+            if (fm.isDestroyed(x, y)) continue;
             Instantiate(computeBlockAt(x, y, seed), new Vector3(x, -y, 0), Quaternion.identity);
         }
             

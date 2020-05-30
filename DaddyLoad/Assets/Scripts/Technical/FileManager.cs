@@ -5,41 +5,46 @@ using System.IO;
 
 public class FileManager : MonoBehaviour
 {
+    private ArrayList coords = new ArrayList();
 
-    void CreateText()
+    public void Start()
     {
-        string path = Application.dataPath + "/Log.txt";
-        Debug.Log("path: " + path);
-        if (!File.Exists(path))
+        loadEmptyBlocks();
+
+        for(int i = 0; i < coords.Count; i++)
         {
-            File.WriteAllText(path, "This is the title yo\n\n");
+            Debug.Log("block destroed: " + coords[i]);
         }
 
-        string content = "Log: " + System.DateTime.Now + "\n";
-
-        File.AppendAllText(path, content);
-
-        
 
     }
 
-    private void Start()
+    public void registerBlockDestroy(int x, int y)
     {
-        string path = Application.dataPath + "/Log.txt";
-        CreateText();
-
-        string [] lines = File.ReadAllLines(path);
-
-        foreach (string s in lines)
-        {
-            Debug.Log("hej " + s);
-        }
-
+   
+        File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "/" + y + "\n");
+        Debug.Log("Registered block destroy at: " + x + ", " + y);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void loadEmptyBlocks()
     {
+        coords.Clear();
+        string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/blocks.txt");
+
+        foreach (string thisLine in input)
+        {
+            string[] splitLine = thisLine.Split('/');
+            var newTuple = (int.Parse(splitLine[0]), int.Parse(splitLine[1]));
+            coords.Add(newTuple);
+            Debug.Log("new tuple: " + newTuple);
+        }
+    }
+
+    public bool isDestroyed(int x, int y)
+    {
+        var newTuple = (x, y);
+        if (x < 6 && x > -6 && y < 6) Debug.Log("x " + x + " y " + y + ": " + coords.Contains(newTuple));
         
+        return coords.Contains(newTuple);
     }
 }
