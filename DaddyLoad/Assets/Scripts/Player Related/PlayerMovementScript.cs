@@ -9,7 +9,6 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
 {
     public Animator animator;
 
-    public float flightSpeed;
     public float runSpeed;
     public float maxFallSpeed;
     public float maxRiseSpeed;
@@ -33,6 +32,7 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         if (!photonView.IsMine) return;
         rb = gameObject.GetComponent<Rigidbody2D>();
     }
+    
     private void Update()
     {
         if (!photonView.IsMine) return;
@@ -59,7 +59,9 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-        transform.position += new Vector3(horizontalMove, 0, 0);
+        //transform.velocity += new Vector3(horizontalMove, 0, 0);
+        rb.velocity = new Vector2(horizontalMove * runSpeed, 0);
+        if (horizontalMove == 0) rb.velocity = Vector2.zero;
 
         if (Input.GetKey("s")) DrillDown();
         if (!Input.GetKey("s"))
@@ -70,8 +72,8 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
 
         isJumping = Input.GetKey("w");
 
-        rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
-        if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass, 0));
+        rb.AddForce(new Vector3(0, -gravity * rb.mass * 20, 0));
+        if (Input.GetKey("w")) rb.AddForce(new Vector3(0, thrustForce * rb.mass * 20, 0));
 
         if (rb.velocity.y < -maxFallSpeed) rb.velocity = new Vector3(rb.velocity.x, -maxFallSpeed, 0);
         if (rb.velocity.y > maxRiseSpeed) rb.velocity = new Vector3(rb.velocity.x, maxRiseSpeed, 0);
@@ -83,7 +85,6 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
 
     private void Flip()
     {
-   
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
