@@ -44,8 +44,6 @@ public class MapGeneratorScript : MonoBehaviour
             if (fm.isDestroyed(x, y)) continue;
             Instantiate(computeBlockAt(x, y, seed), new Vector3(x, -y, 0), Quaternion.identity);
         }
-            
-
     }
 
     public GameObject computeBlockAt(int x, int y, int seed)
@@ -57,6 +55,23 @@ public class MapGeneratorScript : MonoBehaviour
         else if (h.v < 10000) return gold;
         else return stone;
     }
+
+    public void removeBlockAt(int x, int y)
+    {
+        Debug.Log("Called removeblock at  " + x + ", " + y);
+        GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+
+        foreach (GameObject b in blocks)
+        {
+            if (b.transform.position.x == x && b.transform.position.y == y)
+            {
+                Debug.Log("Found object");
+                Destroy(b);
+                return;
+            }
+        }
+    }
+
 }
 
 public class Hash

@@ -10,20 +10,12 @@ public class FileManager : MonoBehaviour
     public void Start()
     {
         loadEmptyBlocks();
-
-        for(int i = 0; i < coords.Count; i++)
-        {
-            Debug.Log("block destroed: " + coords[i]);
-        }
-
-
     }
 
-    public void registerBlockDestroy(int x, int y)
+    public void writeBlockDestroy(int x, int y)
     {
-   
         File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "/" + -y + "\n");
-        Debug.Log("Registered block destroy at: " + x + ", " + -y);
+        Debug.Log("writing block destroy at: " + x + ", " + -y);
     }
 
     public void loadEmptyBlocks()
@@ -43,8 +35,6 @@ public class FileManager : MonoBehaviour
     public bool isDestroyed(int x, int y)
     {
         var newTuple = (x, y);
-        if (x < 6 && x > -6 && y < 6) Debug.Log("x " + x + " y " + y + ": " + coords.Contains(newTuple));
-        
         return coords.Contains(newTuple);
     }
 }
