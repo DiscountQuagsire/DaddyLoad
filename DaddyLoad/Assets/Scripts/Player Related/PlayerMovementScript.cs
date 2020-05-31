@@ -130,10 +130,4 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
-    public void destroyBlock(string playerID, int x, int y)
-    {
-        GameObject.Find("CommManager").GetComponent<CommunicationScript>()
-            .receiveMessage("blockdestroy/" + playerID + "/" + x + "/" + y);
-    }
 }

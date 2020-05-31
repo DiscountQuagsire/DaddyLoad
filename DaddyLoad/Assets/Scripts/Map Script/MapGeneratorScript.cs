@@ -56,6 +56,7 @@ public class MapGeneratorScript : MonoBehaviour
         else return stone;
     }
 
+
     public void removeBlockAt(int x, int y)
     {
         Debug.Log("Called removeblock at  " + x + ", " + y);

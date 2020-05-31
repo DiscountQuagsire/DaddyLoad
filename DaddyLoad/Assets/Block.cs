@@ -9,8 +9,6 @@ public class Block : MonoBehaviourPunCallbacks
     private float health;
     private GameObject player;
 
-
-
     void Start()
     {
         health = maxHealth;
@@ -30,8 +28,8 @@ public class Block : MonoBehaviourPunCallbacks
         //Give drops to player
         if (player != null)
         {
-            player.GetComponent<PlayerMovementScript>().photonView.RPC
-                ("destroyBlock", RpcTarget.All, "fgt", (int)transform.position.x, (int)transform.position.y);
+            player.GetComponent<CommunicationScript>().photonView.RPC
+            ("receiveMessage", RpcTarget.All, "blockdestroy/name/" + (int)transform.position.x + "/" +(int)transform.position.y);
         }
     }
 

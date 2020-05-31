@@ -35,6 +35,10 @@ MonoBehaviour:
   - DestroyRpc
   - sendMessage
   - destroyBlock
+  - sendDestroyBlock
+  - sendSeedRequest
+  - sendSeed
+  - receiveMessage
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
