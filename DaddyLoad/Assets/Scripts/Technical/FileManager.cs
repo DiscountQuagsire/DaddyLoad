@@ -15,7 +15,7 @@ public class FileManager : MonoBehaviour
     public void writeBlockDestroy(int x, int y)
     {
         File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "/" + -y + "\n");
-        Debug.Log("writing block destroy at: " + x + ", " + -y);
+        //Debug.Log("writing block destroy at: " + x + ", " + -y);
     }
 
     public void loadEmptyBlocks()
@@ -28,7 +28,7 @@ public class FileManager : MonoBehaviour
             string[] splitLine = thisLine.Split('/');
             var newTuple = (int.Parse(splitLine[0]), int.Parse(splitLine[1]));
             coords.Add(newTuple);
-            Debug.Log("new tuple: " + newTuple);
+            //Debug.Log("new tuple: " + newTuple);
         }
     }
 
