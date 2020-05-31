@@ -2,39 +2,85 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Runtime;
 
 public class FileManager : MonoBehaviour
 {
-    private ArrayList coords = new ArrayList();
+    public ArrayList destroyedBlockCoords = new ArrayList();
 
     public void Start()
     {
-        loadEmptyBlocks();
+        reloadEmptyBlocks();
+        //getDestroyedBlockCoordinatesInString();
     }
 
     public void writeBlockDestroy(int x, int y)
     {
-        File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "/" + -y + "\n");
-        //Debug.Log("writing block destroy at: " + x + ", " + -y);
+        File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "," + y + "\n");
+        destroyedBlockCoords.Add(new Coordinate(x, y));
+        Debug.Log("writing block destroy at: " + x + ", " + y);
     }
 
-    public void loadEmptyBlocks()
+    public void reloadEmptyBlocks()
     {
-        coords.Clear();
+        destroyedBlockCoords.Clear();
         string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/blocks.txt");
 
         foreach (string thisLine in input)
         {
-            string[] splitLine = thisLine.Split('/');
-            var newTuple = (int.Parse(splitLine[0]), int.Parse(splitLine[1]));
-            coords.Add(newTuple);
-            //Debug.Log("new tuple: " + newTuple);
+
+            Coordinate newCoord = new Coordinate(thisLine);
+            destroyedBlockCoords.Add(newCoord);
         }
     }
 
     public bool isDestroyed(int x, int y)
     {
-        var newTuple = (x, y);
-        return coords.Contains(newTuple);
+        foreach(Coordinate c in destroyedBlockCoords)
+        {
+            if (c.x == x && c.y == y) return true;
+        }
+        return false;
+    }
+
+    public string getDestroyedBlockCoordinatesInString()
+    {
+        string output = "";
+        foreach (Coordinate c in destroyedBlockCoords)
+        {
+            output += c.x + "," + c.y + "*";
+        }
+
+        return output;
+    }
+
+    public void loadDestroyedBlockCoordinatesFromString(string input)
+    {
+        string[] lines = input.Split('*');
+
+        foreach (string thisLine in lines)
+        {
+            Coordinate newCoord = new Coordinate(thisLine);
+            destroyedBlockCoords.Add(newCoord);
+        }
+    }
+}
+
+public class Coordinate
+{
+    public int x;
+    public int y;
+
+    public Coordinate(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Coordinate(string s)
+    {
+        string[] segmented = s.Split(',');
+        this.x = int.Parse(segmented[0]);
+        this.y = int.Parse(segmented[1]);
     }
 }

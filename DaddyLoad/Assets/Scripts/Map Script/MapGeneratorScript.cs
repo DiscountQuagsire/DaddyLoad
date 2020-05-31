@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System;
+using Photon.Pun;
 using UnityEngine;
 
 public class MapGeneratorScript : MonoBehaviour
@@ -11,12 +13,15 @@ public class MapGeneratorScript : MonoBehaviour
     public int seed;
     public Hash h = new Hash();
 
-    int minGeneratedX = -50;
-    int maxGeneratedX = 50;
+    public int minGeneratedX = -50;
+    public int maxGeneratedX = 50;
+    public int maxGeneratedY = 0;
+    public int minGeneratedY = -25;
 
     public void Start()
     {
-        generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, 25);
+        if (PhotonNetwork.IsMasterClient)
+            generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, -25, true);
     }
 
     public void Update()
@@ -24,30 +29,42 @@ public class MapGeneratorScript : MonoBehaviour
         if (Input.GetKeyDown("o"))
         {
             Debug.Log("building left");
-            this.generateMap(minGeneratedX - 10, 10, 25);
+            this.generateMap(minGeneratedX - 10, 10, -25, false);
             minGeneratedX -= 10;
         }
         if (Input.GetKeyDown("p"))
         {
             Debug.Log("building right");
-            this.generateMap(maxGeneratedX, 10, 25);
-            maxGeneratedX += 10;
+            this.generateMap(maxGeneratedX, 100, -150, false);
+            maxGeneratedX += 100;
         }
     }
 
-    public void generateMap(int xStart, int width, int yMin)
+    public void generateMap(int xStart, int width, int yMin, bool hardLoad)
+    {
+        StartCoroutine(actuallyGenerateMap(xStart, width, yMin, hardLoad));
+    }
+
+
+    IEnumerator actuallyGenerateMap(int xStart, int width, int yMin, bool hardLoad)
     {
         FileManager fm = GameObject.Find("FileManager").GetComponent<FileManager>();
         for (int x = xStart; x < xStart + width; x++)
-        for (int y = 0; y < yMin; y++)
+        for (int y = 0; y > yMin; y--)
         {
+            //Debug.Log("Creating block at: " + x + "/" + y);
             if (fm.isDestroyed(x, y)) continue;
-            Instantiate(computeBlockAt(x, y, seed), new Vector3(x, -y, 0), Quaternion.identity);
+            Instantiate(computeBlockAt(x, y, seed), new Vector3(x, y, 0), Quaternion.identity);
+            if (!hardLoad)yield return null;
         }
+
+        
+
     }
 
     public GameObject computeBlockAt(int x, int y, int seed)
     {
+        y = -y;
         h.setHash(x, y, seed);
         if (y < 3) return dirt;
         else if (y == 3 && (h.v % 2 == 0 || h.v % 3 == 0)) return dirt;
@@ -107,7 +124,7 @@ public class Hash
         string s = input.ToString();
         int index = s.IndexOf(".");
         try { return reverseString(s.Substring(index + 1, 5));} catch (Exception e){}
-        try{return reverseString(s.Substring(index -5, 5));}catch (Exception e) { }
+        try { return reverseString(s.Substring(index -5, 5));}  catch (Exception e){}
         Debug.Log("pruser jak brno in mapgen.getpart");
         return "99999";
     }

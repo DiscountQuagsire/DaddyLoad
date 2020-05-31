@@ -26,7 +26,7 @@ public class Block : MonoBehaviourPunCallbacks
     private void OnDestroy()
     {
         //Give drops to player
-        if (player != null)
+        if (player != null && health <= 0)
         {
             player.GetComponent<CommunicationScript>().photonView.RPC
             ("receiveMessage", RpcTarget.All, "blockdestroy/name/" + (int)transform.position.x + "/" +(int)transform.position.y);
