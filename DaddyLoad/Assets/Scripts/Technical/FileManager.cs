@@ -60,6 +60,7 @@ public class FileManager : MonoBehaviour
 
         foreach (string thisLine in lines)
         {
+            if (thisLine.Length == 0) continue;
             Coordinate newCoord = new Coordinate(thisLine);
             destroyedBlockCoords.Add(newCoord);
         }
@@ -79,7 +80,10 @@ public class Coordinate
 
     public Coordinate(string s)
     {
+
         string[] segmented = s.Split(',');
+        Debug.Log(s);
+        Debug.Log(segmented[0] + "," + segmented[1]);
         this.x = int.Parse(segmented[0]);
         this.y = int.Parse(segmented[1]);
     }
