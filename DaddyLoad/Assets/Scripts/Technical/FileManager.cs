@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime;
-
+using Photon.Pun;
 public class FileManager : MonoBehaviour
 {
     public ArrayList destroyedBlockCoords = new ArrayList();
 
     public void Start()
     {
-        reloadEmptyBlocks();
-        //getDestroyedBlockCoordinatesInString();
+        if (PhotonNetwork.IsMasterClient)
+        reloadEmptyBlocksFromOwnFiles();
+        
     }
 
     public void writeBlockDestroy(int x, int y)
@@ -21,7 +22,7 @@ public class FileManager : MonoBehaviour
         Debug.Log("writing block destroy at: " + x + ", " + y);
     }
 
-    public void reloadEmptyBlocks()
+    public void reloadEmptyBlocksFromOwnFiles()
     {
         destroyedBlockCoords.Clear();
         string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/blocks.txt");
