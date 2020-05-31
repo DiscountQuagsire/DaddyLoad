@@ -36,4 +36,11 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().seed = newSeed;
     }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+
+        Debug.Log("New player joined");
+
+    }
+
 }
