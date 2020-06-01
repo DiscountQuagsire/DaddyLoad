@@ -155,7 +155,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 30
   m_Sprite: {fileID: 6271674672454095231, guid: 9688047748a8e0d4fb73bb48c8a39802,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 7180911287652206463}
   m_Layer: 0
   m_Name: PlayerPrefab
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
