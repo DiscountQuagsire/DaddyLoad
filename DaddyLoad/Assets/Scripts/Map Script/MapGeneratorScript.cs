@@ -13,52 +13,116 @@ public class MapGeneratorScript : MonoBehaviour
     public int seed;
     public Hash h = new Hash();
 
-    public int minGeneratedX = -50;
-    public int maxGeneratedX = 50;
-    public int maxGeneratedY = 0;
-    public int minGeneratedY = -25;
-
     public void Start()
     {
-        if (PhotonNetwork.IsMasterClient)
-            generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, -25, true);
+        //if (PhotonNetwork.IsMasterClient) return;
+        //generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, 0, true);
+        //DateTime before = System.DateTime.Now;
+        //this.generateMap(0, 50, -100, 50, true);
+        //Debug.Log("time: " + (System.DateTime.Now - before).TotalMilliseconds);
     }
 
     public void Update()
     {
-        if (Input.GetKeyDown("o"))
+
+        if (Input.GetKeyDown("i"))
         {
-            Debug.Log("building left");
-            this.generateMap(minGeneratedX - 10, 10, -25, false);
-            minGeneratedX -= 10;
+            DateTime before = System.DateTime.Now;
+            this.generateMapAroundYou(20, 20, true);
+            Debug.Log("time: " + (System.DateTime.Now - before).TotalMilliseconds);
         }
-        if (Input.GetKeyDown("p"))
+        if (Input.GetKeyDown("k"))
+
         {
-            Debug.Log("building right");
-            this.generateMap(maxGeneratedX, 100, -150, false);
-            maxGeneratedX += 100;
+            DateTime before = System.DateTime.Now;
+            this.generateMap(0, 10, -100, 10, true);
+            Debug.Log("time: " + (System.DateTime.Now - before).TotalMilliseconds);
+        }
+
+    }
+
+
+    int index = 0;
+    public void FixedUpdate()
+    {
+        index++;
+
+        if (index % 25 == 0)
+        {
+            //this.generateMapAroundYou(25, 12, true);
         }
     }
 
-    public void generateMap(int xStart, int width, int yMin, bool hardLoad)
+    public void generateMapAroundYou(int width, int height, bool hardLoad)
     {
-        StartCoroutine(actuallyGenerateMap(xStart, width, yMin, hardLoad));
+        Vector3 pos = GameObject.FindGameObjectWithTag("Player").transform.position;
+
+        Debug.Log("gmay at: " + pos);
+
+        this.generateMap((int)pos.x, width, (int)pos.y, height, hardLoad);
+
+
+
     }
 
 
-    IEnumerator actuallyGenerateMap(int xStart, int width, int yMin, bool hardLoad)
+
+    public void generateMap(int xStart, int width, int topY, int height, bool hardLoad)
     {
+        StartCoroutine(actuallyGenerateMap(xStart, width, topY, height , hardLoad));
+    }
+
+
+    IEnumerator actuallyGenerateMap(int xMid, int width, int midY, int height, bool hardLoad)
+    {
+        
         FileManager fm = GameObject.Find("FileManager").GetComponent<FileManager>();
-        for (int x = xStart; x < xStart + width; x++)
-        for (int y = 0; y > yMin; y--)
-        {
-            //Debug.Log("Creating block at: " + x + "/" + y);
-            if (fm.isDestroyed(x, y)) continue;
-            Instantiate(computeBlockAt(x, y, seed), new Vector3(x, y, 0), Quaternion.identity);
-            if (!hardLoad)yield return null;
-        }
 
         
+        /*
+        GameObject[] allBlocks = GameObject.FindGameObjectsWithTag("Block");
+        ArrayList relevantBlocks = new ArrayList();
+        
+        foreach (GameObject b in allBlocks)
+        {
+            if (b.transform.position.x < xMid - width ||
+                b.transform.position.x > xMid + width ||
+                b.transform.position.y < midY - height ||
+                b.transform.position.y > midY + height
+                )
+
+                continue;
+
+            relevantBlocks.Add(b);
+        }*/
+           
+
+
+        for (int x = xMid-width; x < xMid + width; x++)
+        for (int y = midY + height;  y > midY - height; y--)
+        {
+            if (y > 0) continue;
+            
+            /*bool shouldSkip = false;
+            foreach (GameObject b in relevantBlocks)
+            {
+                    if ((int)b.transform.position.x == x && (int)b.transform.position.y == y)
+                    {
+                        shouldSkip = true;
+                        break;
+                    }
+            }
+
+                if (shouldSkip) continue;*/
+
+
+            
+            if (fm.isDestroyed(x, y)) continue;
+            //Debug.Log("Creating block at: " + x + "/" + y);
+            //Instantiate(computeBlockAt(x, y, seed), new Vector3(x, y, 0), Quaternion.identity);
+                Instantiate(dirt, new Vector3(x, y, 0), Quaternion.identity);
+                if (!hardLoad)yield return null;
+        }
 
     }
 
@@ -72,7 +136,6 @@ public class MapGeneratorScript : MonoBehaviour
         else if (h.v < 10000) return gold;
         else return stone;
     }
-
 
     public void removeBlockAt(int x, int y)
     {
@@ -90,6 +153,16 @@ public class MapGeneratorScript : MonoBehaviour
         }
     }
 
+    public float getNearestNotGeneratedBlockDistance()
+    {
+        GameObject[] allBlocks = GameObject.FindGameObjectsWithTag("Block");
+        ArrayList relevantBlocks = new ArrayList();
+
+
+
+        return 0;
+    }
+
 }
 
 public class Hash
@@ -99,7 +172,7 @@ public class Hash
 
     public void setHash(int x, int y, int seed)  
     {
-        bool isLeft = x < 0;
+        /*bool isLeft = x < 0;
         double rootSeed = Math.Pow(seed, 0.25);
         double modSeed8 = seed % 8;
         double modX64 = x > 0 ? (x % 64) : 1;
@@ -110,13 +183,21 @@ public class Hash
         big *= (this.getFullDecimal(x1 * y1 * Math.Pow(big, 0.5)) + modSeed8) * rootSeed;
         if (isLeft) big *= Math.Pow(seed / 18.5, 19f / 41f);
         v = int.Parse(this.getPart(big));
+        //Debug.Log("x: " + x + ", y: " + y + ", v: " + v);*/
+
+        double x1 = Math.Pow(Math.Pow(x, 8) + seed * 8, 1f / 2f) / ((x > 0 ? (x % 64) : 1) + 2);
+        double y1 = Math.Pow(Math.Pow(y, 7) + seed * 3.5, 1f / 3f) / ((y > 0 ? (y % 59) : 1) + 2);
+        double big = Math.E * Math.Pow(x1, 0.5) * Math.Pow(y1, 0.5) / seed;
+        big *= (this.getFullDecimal(x1 * y1 * Math.Pow(big, 0.5)) + seed % 8) * Math.Pow(seed, 0.25);
+        if (x < 0) big *= Math.Pow(seed / 18.5, 19f / 41f);
+        v = int.Parse(this.getPart(big));
         //Debug.Log("x: " + x + ", y: " + y + ", v: " + v);
     }
 
     private double getFullDecimal(double input)
     {
-        String s = input.ToString();
-        return double.Parse(s.Substring(s.IndexOf(".") + 1).Replace("E", ""));
+        //String s = input.ToString();
+        return double.Parse(input.ToString().Substring(input.ToString().IndexOf(".") + 1).Replace("E", ""));
     }
 
     private string getPart(double input)

@@ -12,7 +12,6 @@ public class FileManager : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         reloadEmptyBlocksFromOwnFiles();
-        
     }
 
     public void writeBlockDestroy(int x, int y)
@@ -83,8 +82,8 @@ public class Coordinate
     {
 
         string[] segmented = s.Split(',');
-        Debug.Log(s);
-        Debug.Log(segmented[0] + "," + segmented[1]);
+        //Debug.Log(s);
+        //Debug.Log(segmented[0] + "," + segmented[1]);
         this.x = int.Parse(segmented[0]);
         this.y = int.Parse(segmented[1]);
     }

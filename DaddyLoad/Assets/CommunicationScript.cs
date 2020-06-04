@@ -46,7 +46,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     {
         Debug.Log("receiving map info: " + mapInfo);
         GameObject.Find("FileManager").GetComponent<FileManager>().loadDestroyedBlockCoordinatesFromString(mapInfo);
-        GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().generateMap(-50, 100, -25, true);
+        //GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().generateMap(-50, 100, -25, true);
     }
 
 
