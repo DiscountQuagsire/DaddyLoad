@@ -52,7 +52,7 @@ public class MapGeneratorScript : MonoBehaviour
     {
         index++;
 
-        if (index % 50 == 0)
+        if (index % 49 == 0)
         {
             this.generateNearbyUnloadedChunks();
         }
@@ -70,7 +70,7 @@ public class MapGeneratorScript : MonoBehaviour
             Coordinate c = (Coordinate)loadedChunkCoordinates[i];
             if (c.isWithinSight(pos, sightHalfWidth*2, sightHalfHeight*2, chunkSize)) continue; // corrects for assymetry
             {                                                                                   // jestli jsem nic neposral, that is
-                StartCoroutine(this.removeChunkAt(c, false));
+                StartCoroutine(this.removeChunkAt(c, true));
                 loadedChunkCoordinates.Remove(c);
                 i--;
             }
