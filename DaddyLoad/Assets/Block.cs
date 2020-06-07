@@ -6,37 +6,29 @@ using Photon.Pun;
 public class Block : MonoBehaviourPunCallbacks
 {
     public float maxHealth;
-    private float health;
-    private GameObject player;
+    private float currentHealth;
+    private GameObject lastPlayerWhoDamaged;
 
     void Start()
     {
-        health = maxHealth;
-    }
-
-
-    void Update()
-    {
-        if (health <= 0)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    private void OnDestroy()
-    {
-        //Give drops to player
-        if (player != null && health <= 0)
-        {
-            player.GetComponent<CommunicationScript>().photonView.RPC
-            ("receiveMessage", RpcTarget.All, "blockdestroy/name/" + (int)transform.position.x + "/" +(int)transform.position.y);
-        }
+        currentHealth = maxHealth;
     }
 
     public void takeDamage(float damage, GameObject p)
     {
-        player = p;
-        health -= damage;
+        lastPlayerWhoDamaged = p;
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            myVeryOwnOnDestroy();
+        }
+    }
+
+    private void myVeryOwnOnDestroy()
+    {
+        if (lastPlayerWhoDamaged == null) return; //tohle nemuze nastat
+        lastPlayerWhoDamaged.GetComponent<CommunicationScript>().photonView.RPC
+        ("receiveMessage", RpcTarget.All, "blockdestroy/name/" + (int)transform.position.x + "/" + (int)transform.position.y);
     }
 
 }

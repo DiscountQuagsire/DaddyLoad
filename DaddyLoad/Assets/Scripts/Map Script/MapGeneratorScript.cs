@@ -13,8 +13,17 @@ public class MapGeneratorScript : MonoBehaviour
     public int seed;
     public Hash h = new Hash();
 
+    public int chunkSize = 10;
+
+    public int sightHalfWidth = 23;
+    public int sightHalfHeight = 10;
+
+    public ArrayList loadedChunkCoordinates = new ArrayList();
+    FileManager fm;
+
     public void Start()
     {
+        fm = GameObject.Find("FileManager").GetComponent<FileManager>();
         //if (PhotonNetwork.IsMasterClient) return;
         //generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, 0, true);
         //DateTime before = System.DateTime.Now;
@@ -27,16 +36,12 @@ public class MapGeneratorScript : MonoBehaviour
 
         if (Input.GetKeyDown("i"))
         {
-            DateTime before = System.DateTime.Now;
-            this.generateMapAroundYou(20, 20, true);
-            Debug.Log("time: " + (System.DateTime.Now - before).TotalMilliseconds);
+            this.generateNearbyUnloadedChunks();
         }
-        if (Input.GetKeyDown("k"))
 
+        if (Input.GetKeyDown("c"))
         {
-            DateTime before = System.DateTime.Now;
-            this.generateMap(0, 10, -100, 10, true);
-            Debug.Log("time: " + (System.DateTime.Now - before).TotalMilliseconds);
+            this.unloadFarAwayChunks();
         }
 
     }
@@ -47,83 +52,84 @@ public class MapGeneratorScript : MonoBehaviour
     {
         index++;
 
+        if (index % 50 == 0)
+        {
+            this.generateNearbyUnloadedChunks();
+        }
         if (index % 25 == 0)
         {
-            //this.generateMapAroundYou(25, 12, true);
+            this.unloadFarAwayChunks();
         }
     }
 
-    public void generateMapAroundYou(int width, int height, bool hardLoad)
+    private void unloadFarAwayChunks()
     {
         Vector3 pos = GameObject.FindGameObjectWithTag("Player").transform.position;
-
-        Debug.Log("gmay at: " + pos);
-
-        this.generateMap((int)pos.x, width, (int)pos.y, height, hardLoad);
-
-
-
-    }
-
-
-
-    public void generateMap(int xStart, int width, int topY, int height, bool hardLoad)
-    {
-        StartCoroutine(actuallyGenerateMap(xStart, width, topY, height , hardLoad));
-    }
-
-
-    IEnumerator actuallyGenerateMap(int xMid, int width, int midY, int height, bool hardLoad)
-    {
-        
-        FileManager fm = GameObject.Find("FileManager").GetComponent<FileManager>();
-
-        
-        /*
-        GameObject[] allBlocks = GameObject.FindGameObjectsWithTag("Block");
-        ArrayList relevantBlocks = new ArrayList();
-        
-        foreach (GameObject b in allBlocks)
+        for (int i = 0; i < loadedChunkCoordinates.Count; i++)
         {
-            if (b.transform.position.x < xMid - width ||
-                b.transform.position.x > xMid + width ||
-                b.transform.position.y < midY - height ||
-                b.transform.position.y > midY + height
-                )
-
-                continue;
-
-            relevantBlocks.Add(b);
-        }*/
-           
-
-
-        for (int x = xMid-width; x < xMid + width; x++)
-        for (int y = midY + height;  y > midY - height; y--)
-        {
-            if (y > 0) continue;
-            
-            /*bool shouldSkip = false;
-            foreach (GameObject b in relevantBlocks)
-            {
-                    if ((int)b.transform.position.x == x && (int)b.transform.position.y == y)
-                    {
-                        shouldSkip = true;
-                        break;
-                    }
+            Coordinate c = (Coordinate)loadedChunkCoordinates[i];
+            if (c.isWithinSight(pos, sightHalfWidth*2, sightHalfHeight*2, chunkSize)) continue; // corrects for assymetry
+            {                                                                                   // jestli jsem nic neposral, that is
+                StartCoroutine(this.removeChunkAt(c, false));
+                loadedChunkCoordinates.Remove(c);
+                i--;
             }
+        }
+    }
 
-                if (shouldSkip) continue;*/
+    public void generateNearbyUnloadedChunks() // what even is optimization
+    {
 
+        Vector3 pos = GameObject.FindGameObjectWithTag("Player").transform.position;
+        int drillX = (int)pos.x;
+        int drillY = (int)pos.y;
 
+        for (int possibleX = 0; possibleX < drillX + sightHalfWidth*2; possibleX += chunkSize)
+        for (int possibleY = 0; possibleY > drillY - sightHalfHeight*2; possibleY -= chunkSize)
+        {
+            Coordinate c = new Coordinate(possibleX, possibleY);
+            if (c.isWithinSight(pos, sightHalfWidth, sightHalfHeight, chunkSize))
+                this.attemptToGenerateChunk(new Coordinate(possibleX, possibleY), true);
             
+        }
+    }
+
+    IEnumerator removeChunkAt(Coordinate c, bool hardLoad)
+    {
+        DateTime before = System.DateTime.Now;
+
+        for (int x = c.x; x < c.x + chunkSize; x++)
+            for (int y = c.y; y > c.y - chunkSize; y--)
+            {
+                removeBlockAt(x, y);
+                if (!hardLoad) yield return null;
+            }
+        Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
+    }
+
+    public void attemptToGenerateChunk(Coordinate c, bool hardLoad)
+    {
+        if (c.isInArray(loadedChunkCoordinates)) return;
+        loadedChunkCoordinates.Add(c);
+        StartCoroutine(this.actuallyGenerateChunk(c, hardLoad));
+    }
+
+    IEnumerator actuallyGenerateChunk(Coordinate c, bool hardLoad)
+    {
+        DateTime before = System.DateTime.Now;
+
+        for (int x = c.x; x < c.x + chunkSize; x++)
+        for (int y = c.y; y > c.y - chunkSize; y--)
+        {
+                
+            if (y > 0) continue;
             if (fm.isDestroyed(x, y)) continue;
             //Debug.Log("Creating block at: " + x + "/" + y);
-            //Instantiate(computeBlockAt(x, y, seed), new Vector3(x, y, 0), Quaternion.identity);
-                Instantiate(dirt, new Vector3(x, y, 0), Quaternion.identity);
-                if (!hardLoad)yield return null;
+            Instantiate(computeBlockAt(x, y, seed), new Vector3(x, y, 0), Quaternion.identity);
+            if (!hardLoad) yield return null;
         }
-
+        yield return null;
+        Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
     }
 
     public GameObject computeBlockAt(int x, int y, int seed)
@@ -137,32 +143,23 @@ public class MapGeneratorScript : MonoBehaviour
         else return stone;
     }
 
+   
+
     public void removeBlockAt(int x, int y)
     {
-        Debug.Log("Called removeblock at  " + x + ", " + y);
+        //Debug.Log("Called removeblock at  " + x + ", " + y);
         GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
 
         foreach (GameObject b in blocks)
         {
             if (b.transform.position.x == x && b.transform.position.y == y)
             {
-                Debug.Log("Found object");
+                //Debug.Log("Found object");
                 Destroy(b);
                 return;
             }
         }
     }
-
-    public float getNearestNotGeneratedBlockDistance()
-    {
-        GameObject[] allBlocks = GameObject.FindGameObjectsWithTag("Block");
-        ArrayList relevantBlocks = new ArrayList();
-
-
-
-        return 0;
-    }
-
 }
 
 public class Hash
@@ -172,19 +169,6 @@ public class Hash
 
     public void setHash(int x, int y, int seed)  
     {
-        /*bool isLeft = x < 0;
-        double rootSeed = Math.Pow(seed, 0.25);
-        double modSeed8 = seed % 8;
-        double modX64 = x > 0 ? (x % 64) : 1;
-        double modY59 = y > 0 ? (y % 59) : 1;
-        double x1 = Math.Pow(Math.Pow(x, 8) + seed * 8, 1f / 2f) / (modX64 + 2);
-        double y1 = Math.Pow(Math.Pow(y, 7) + seed * 3.5, 1f / 3f) / (modY59 + 2);
-        double big = Math.E * Math.Pow(x1, 0.5) * Math.Pow(y1, 0.5) / seed;
-        big *= (this.getFullDecimal(x1 * y1 * Math.Pow(big, 0.5)) + modSeed8) * rootSeed;
-        if (isLeft) big *= Math.Pow(seed / 18.5, 19f / 41f);
-        v = int.Parse(this.getPart(big));
-        //Debug.Log("x: " + x + ", y: " + y + ", v: " + v);*/
-
         double x1 = Math.Pow(Math.Pow(x, 8) + seed * 8, 1f / 2f) / ((x > 0 ? (x % 64) : 1) + 2);
         double y1 = Math.Pow(Math.Pow(y, 7) + seed * 3.5, 1f / 3f) / ((y > 0 ? (y % 59) : 1) + 2);
         double big = Math.E * Math.Pow(x1, 0.5) * Math.Pow(y1, 0.5) / seed;
@@ -197,7 +181,17 @@ public class Hash
     private double getFullDecimal(double input)
     {
         //String s = input.ToString();
-        return double.Parse(input.ToString().Substring(input.ToString().IndexOf(".") + 1).Replace("E", ""));
+        string s = input.ToString("F99").TrimEnd('0');
+        //return double.Parse(input.ToString().Substring(input.ToString().IndexOf(".") + 1).Replace("E","").Replace("+","").Replace("-", ""));
+        try
+        {
+            return double.Parse(input.ToString().Substring(s.IndexOf(".") + 1));
+        }
+        catch (Exception e)
+        {
+            Debug.Log("problem");
+            return 12456789; 
+        }
     }
 
     private string getPart(double input)
@@ -219,4 +213,3 @@ public class Hash
         return new string(result);
     }
 }
-

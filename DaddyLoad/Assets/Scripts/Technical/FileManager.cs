@@ -18,7 +18,7 @@ public class FileManager : MonoBehaviour
     {
         File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "," + y + "\n");
         destroyedBlockCoords.Add(new Coordinate(x, y));
-        Debug.Log("writing block destroy at: " + x + ", " + y);
+        //Debug.Log("writing block destroy at: " + x + ", " + y);
     }
 
     public void reloadEmptyBlocksFromOwnFiles()
@@ -80,11 +80,26 @@ public class Coordinate
 
     public Coordinate(string s)
     {
-
         string[] segmented = s.Split(',');
-        //Debug.Log(s);
-        //Debug.Log(segmented[0] + "," + segmented[1]);
         this.x = int.Parse(segmented[0]);
         this.y = int.Parse(segmented[1]);
+    }
+
+    public bool isInArray(ArrayList haystack)
+    {
+        foreach (Coordinate currentCoordinate in haystack)
+            if (currentCoordinate.x == x && currentCoordinate.y == y) return true;
+        return false;
+    }
+
+    public bool isWithinSight(Vector3 whichPointWeMeasureFrom, float sightHalfWidth, float sightHalfHeight, int chunkSize)
+    {
+
+        if (x < whichPointWeMeasureFrom.x - sightHalfWidth - chunkSize)     return false;
+        if (x > whichPointWeMeasureFrom.x + sightHalfWidth)                 return false;
+        if (y < whichPointWeMeasureFrom.y - sightHalfHeight)                return false;
+        if (y > whichPointWeMeasureFrom.y + sightHalfHeight + chunkSize)    return false;
+
+        return true;
     }
 }
