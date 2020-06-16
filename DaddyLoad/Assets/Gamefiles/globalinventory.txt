@@ -1,4 +1,0 @@
-diamond/55
-emerald/13
-iron/23
-copper/111

@@ -13,13 +13,15 @@ public class FileManager : MonoBehaviour
 
     public void Start()
     {
+        mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
         if (PhotonNetwork.IsMasterClient)
         {
             reloadEmptyBlocksFromOwnFiles();
-            mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
             mgs.globalInventory.materials = this.getDictionaryFromGlobalInventory();
         }
     }
+
+
 
     public void writeBlockDestroy(int x, int y)
     {
@@ -71,7 +73,7 @@ public class FileManager : MonoBehaviour
     public void moveLocalInventoryToGlobalInventory()
     {
         Dictionary<string, int> localMaterials = mgs.localInventory.materials;
-        Dictionary<string, int> globalMaterials = getDictionaryFromGlobalInventory();
+        Dictionary<string, int> globalMaterials = mgs.globalInventory.materials;
 
         File.WriteAllText(Application.dataPath + "/GameFiles/globalinventory.txt", String.Empty);
 
