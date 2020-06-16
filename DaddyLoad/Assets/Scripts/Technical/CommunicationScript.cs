@@ -9,13 +9,13 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
 {
     // single point of entry pro vsechnu komunikaci
 
-    FileManager fm;
-    MapGeneratorScript mgs;
+    //FileManager fm;
+    //MapGeneratorScript mgs;
 
     public void Start()
     {
-        fm = GameObject.Find("FileManager").GetComponent<FileManager>();
-        mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
+        //fm = GameObject.Find("FileManager").GetComponent<FileManager>();
+        //mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
     }
 
     [PunRPC]
@@ -25,23 +25,23 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         string[] segmented = message.Split('/');
 
         if (segmented[0] == "blockdestroy")
-            this.receiveBlockDestroyInfo(segmented[1], int.Parse(segmented[2]), int.Parse(segmented[3]));
+            receiveBlockDestroyInfo(segmented[1], int.Parse(segmented[2]), int.Parse(segmented[3]));
 
         if (segmented[0] == "setseed")
-            this.receiveSeedUpdate(int.Parse(segmented[1]));
+            receiveSeedUpdate(int.Parse(segmented[1]));
 
         if (segmented[0] == "mapinfo")
-            this.receiveMapInfo(segmented[1]);
+            receiveMapInfo(segmented[1]);
 
         if (segmented[0] == "materialupdate")
-            this.updateGlobalInventoryMaterial(segmented[1], int.Parse(segmented[2]));
+            updateGlobalInventoryMaterial(segmented[1], int.Parse(segmented[2]));
 
     }
 
     // locally called metoda ktera updatne 1 material v mgs.globalinventory
     private void updateGlobalInventoryMaterial(string material, int amount)
     {
-        mgs.globalInventory.materials[material] = amount;
+        GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().globalInventory.materials[material] = amount;
     }
 
     // locally called metoda ktera removne block; pokud jsi master tak ho i logne
@@ -49,9 +49,9 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            fm.writeBlockDestroy(x, y);
+            GameObject.Find("FileManager").GetComponent<FileManager>().writeBlockDestroy(x, y);
         }
-        mgs.removeBlockAt(x, y);
+        GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().removeBlockAt(x, y);
     }
 
     // locally called; updatne seed
@@ -64,7 +64,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     private void receiveMapInfo(string mapInfo)
     {
         Debug.Log("receiving map info: " + mapInfo);
-        fm.loadDestroyedBlockCoordinatesFromString(mapInfo);
+        GameObject.Find("FileManager").GetComponent<FileManager>().loadDestroyedBlockCoordinatesFromString(mapInfo);
        
     }
 
@@ -76,12 +76,12 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient) return;
 
         // misto newplayer bylo all
-        photonView.RPC ("receiveMessage", newPlayer, "setseed/" + mgs.seed);
+        photonView.RPC ("receiveMessage", newPlayer, "setseed/" + GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().seed);
 
-        string msg = fm.getDestroyedBlockCoordinatesInString();
+        string msg = GameObject.Find("FileManager").GetComponent<FileManager>().getDestroyedBlockCoordinatesInString();
         photonView.RPC("receiveMessage", newPlayer, "mapinfo/" + msg);
 
-        foreach (KeyValuePair<string, int> pair in mgs.globalInventory.materials)
+        foreach (KeyValuePair<string, int> pair in GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().globalInventory.materials)
         {
             photonView.RPC("receiveMessage", newPlayer, "materialupdate/" + pair.Key + "/" + pair.Value);
         }
