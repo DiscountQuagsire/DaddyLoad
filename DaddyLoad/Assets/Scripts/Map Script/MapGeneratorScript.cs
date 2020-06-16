@@ -41,6 +41,19 @@ public class MapGeneratorScript : MonoBehaviour
             fm.moveLocalInventoryToGlobalInventory();
         }
 
+        if (Input.GetKeyDown("j"))
+        {
+            Debug.Log("Updating global inventory for everyone");
+            fm.updateGlobalInventoryForEveryone();
+        }
+
+        if (Input.GetKeyDown("k"))
+        {
+            Debug.Log("Saving global inventory to file");
+            fm.writeDownGlobalInventory();
+        }
+
+
     }
 
     int index = 0;

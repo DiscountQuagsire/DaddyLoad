@@ -14,10 +14,11 @@ public class FileManager : MonoBehaviour
     public void Start()
     {
         if (PhotonNetwork.IsMasterClient)
-        reloadEmptyBlocksFromOwnFiles();
-
-        mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
-        mgs.globalInventory.materials = this.getDictionaryFromGlobalInventory();
+        {
+            reloadEmptyBlocksFromOwnFiles();
+            mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
+            mgs.globalInventory.materials = this.getDictionaryFromGlobalInventory();
+        }
     }
 
     public void writeBlockDestroy(int x, int y)
@@ -34,8 +35,7 @@ public class FileManager : MonoBehaviour
 
         foreach (string thisLine in input)
         {
-            Coordinate newCoord = new Coordinate(thisLine);
-            destroyedBlockCoords.Add(newCoord);
+            destroyedBlockCoords.Add(new Coordinate(thisLine));
         }
     }
 
@@ -90,8 +90,18 @@ public class FileManager : MonoBehaviour
         mgs.globalInventory.materials = globalMaterials;
         Debug.Log("New global inventory: ");
         mgs.globalInventory.listInventory();
-        writeDownGlobalInventory();
         localMaterials.Clear();
+    }
+
+    public void updateGlobalInventoryForEveryone()
+    {
+        CommunicationScript cs = GameObject.FindGameObjectWithTag("Player").GetComponent<CommunicationScript>();
+        Dictionary<string, int> globalMaterials = mgs.globalInventory.materials;
+
+        foreach (KeyValuePair<string, int> pair in globalMaterials)
+        {
+            cs.photonView.RPC("receiveMessage", RpcTarget.Others, "materialupdate/" + pair.Key + "/" + pair.Value);
+        }
     }
 
     public Dictionary<string, int> getDictionaryFromGlobalInventory()
