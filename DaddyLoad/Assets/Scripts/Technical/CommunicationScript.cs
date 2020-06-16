@@ -21,7 +21,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     [PunRPC]
     public void receiveMessage(string message)
     {
-        //Debug.Log("received message: " + message);
+        Debug.Log("received message: " + message);
         string[] segmented = message.Split('/');
 
         if (segmented[0] == "blockdestroy")
@@ -58,7 +58,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     private void receiveSeedUpdate(int newSeed)
     {
         Debug.Log("Setting seed to: " + newSeed);
-        mgs.setSeed(newSeed);
+        GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().setSeed(newSeed); 
     }
 
     private void receiveMapInfo(string mapInfo)

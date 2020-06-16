@@ -90,6 +90,7 @@ public class FileManager : MonoBehaviour
         mgs.globalInventory.materials = globalMaterials;
         Debug.Log("New global inventory: ");
         mgs.globalInventory.listInventory();
+        writeDownGlobalInventory();
         localMaterials.Clear();
     }
 

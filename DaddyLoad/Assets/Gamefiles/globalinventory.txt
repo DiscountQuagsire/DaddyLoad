@@ -1,0 +1,4 @@
+diamond/5
+emerald/3
+iron/3
+copper/1
