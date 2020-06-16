@@ -4,19 +4,25 @@ using UnityEngine;
 using System.IO;
 using System.Runtime;
 using Photon.Pun;
+using System;
+
 public class FileManager : MonoBehaviour
 {
     public ArrayList destroyedBlockCoords = new ArrayList();
+    public MapGeneratorScript mgs;
 
     public void Start()
     {
         if (PhotonNetwork.IsMasterClient)
         reloadEmptyBlocksFromOwnFiles();
+
+        mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
+        mgs.globalInventory.materials = this.getDictionaryFromGlobalInventory();
     }
 
     public void writeBlockDestroy(int x, int y)
     {
-        File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + "," + y + "\n");
+        //File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + ", " + y + "\n");
         destroyedBlockCoords.Add(new Coordinate(x, y));
         //Debug.Log("writing block destroy at: " + x + ", " + y);
     }
@@ -28,7 +34,6 @@ public class FileManager : MonoBehaviour
 
         foreach (string thisLine in input)
         {
-
             Coordinate newCoord = new Coordinate(thisLine);
             destroyedBlockCoords.Add(newCoord);
         }
@@ -54,6 +59,55 @@ public class FileManager : MonoBehaviour
         return output;
     }
 
+    public void writeDownGlobalInventory()
+    {
+        
+        foreach (KeyValuePair<string, int> pair in mgs.globalInventory.materials)
+        {
+            File.AppendAllText(Application.dataPath + "/GameFiles/globalinventory.txt", pair.Key + "/" + pair.Value + "\n");
+        }
+    }
+
+    public void moveLocalInventoryToGlobalInventory()
+    {
+        Dictionary<string, int> localMaterials = mgs.localInventory.materials;
+        Dictionary<string, int> globalMaterials = getDictionaryFromGlobalInventory();
+
+        File.WriteAllText(Application.dataPath + "/GameFiles/globalinventory.txt", String.Empty);
+
+        foreach (KeyValuePair<string, int> pair in localMaterials)
+        {
+            if (globalMaterials.ContainsKey(pair.Key))
+
+                globalMaterials[pair.Key] = globalMaterials[pair.Key] + pair.Value;
+
+            else
+
+                globalMaterials.Add(pair.Key, pair.Value);
+
+        }
+
+        mgs.globalInventory.materials = globalMaterials;
+        Debug.Log("New global inventory: ");
+        mgs.globalInventory.listInventory();
+        localMaterials.Clear();
+    }
+
+    public Dictionary<string, int> getDictionaryFromGlobalInventory()
+    {
+        string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/globalinventory.txt");
+        Dictionary<string, int> globalInventory = new Dictionary<string, int>();
+
+        foreach (string line in input)
+        {
+            string[] segmented = line.Split('/');
+            globalInventory.Add(segmented[0], int.Parse(segmented[1]));
+
+        }
+
+        return globalInventory;
+    }
+
     public void loadDestroyedBlockCoordinatesFromString(string input)
     {
         string[] lines = input.Split('*');
@@ -67,6 +121,37 @@ public class FileManager : MonoBehaviour
     }
 }
 
+public class Inventory
+{
+    
+    public Dictionary<string, int> materials = new Dictionary<string, int>();
+    
+    public void addMaterial(string material)
+    {
+        if (materials.ContainsKey(material))
+        {
+            materials[material] = materials[material] + 1;
+        }
+        else
+        {
+            materials.Add(material, 1);
+        }
+
+    }
+
+    public void listInventory()
+    {
+        string output = "Inventory: ";
+        foreach (KeyValuePair<string, int> pair in materials)
+        {
+            output += pair.Key + ": " + pair.Value + "  //  ";
+        }
+        Debug.Log(output);
+    }
+
+
+}
+ 
 public class Coordinate
 {
     public int x;
@@ -81,8 +166,8 @@ public class Coordinate
     public Coordinate(string s)
     {
         string[] segmented = s.Split(',');
-        this.x = int.Parse(segmented[0]);
-        this.y = int.Parse(segmented[1]);
+        x = int.Parse(segmented[0]);
+        y = int.Parse(segmented[1]);
     }
 
     public bool isInArray(ArrayList haystack)

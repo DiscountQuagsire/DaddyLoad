@@ -37,12 +37,14 @@ public class PlayerMovementScript : MonoBehaviourPunCallbacks
     private void Update()
     {
         if (!photonView.IsMine) return;
-        if (Input.GetKeyDown("g")) GetComponent<BoxCollider2D>().enabled = !GetComponent<BoxCollider2D>().enabled;
+        if (Input.GetKeyDown("g")) GetComponent<CircleCollider2D>().enabled = !GetComponent<CircleCollider2D>().enabled;
 
         if (!isDrilling) horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         if (isDrilling) horizontalMove = 0;
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
         animator.SetBool("IsJumping", isJumping);
+
+        rb.velocity = new Vector3(0, rb.velocity.y, 0);
 
         if (horizontalMove > 0 && !isTurnedRight)
         {

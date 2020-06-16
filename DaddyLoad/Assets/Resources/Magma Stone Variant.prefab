@@ -83,5 +83,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6388018556155893287, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
+        type: 3}
+      propertyPath: maxHealth
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6388018556155893287, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
+        type: 3}
+      propertyPath: resourceName
+      value: magma
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d3d6dfea27e67f40affe45f3903bbe0, type: 3}

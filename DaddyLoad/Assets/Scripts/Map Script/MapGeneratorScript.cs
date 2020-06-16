@@ -7,28 +7,23 @@ using UnityEngine;
 
 public class MapGeneratorScript : MonoBehaviour
 {
-    public GameObject dirt;
-    public GameObject stone;
-    public GameObject gold;
     public int seed;
-    public Hash h = new Hash();
 
     public int chunkSize = 10;
-
     public int sightHalfWidth = 23;
-    public int sightHalfHeight = 10;
+    public int sightHalfHeight = 12;
 
     public ArrayList loadedChunkCoordinates = new ArrayList();
     FileManager fm;
+    BiomeManager bm;
+    public Inventory localInventory = new Inventory();
+    public Inventory globalInventory = new Inventory();
 
     public void Start()
     {
         fm = GameObject.Find("FileManager").GetComponent<FileManager>();
-        //if (PhotonNetwork.IsMasterClient) return;
-        //generateMap(minGeneratedX, maxGeneratedX - minGeneratedX, 0, true);
-        //DateTime before = System.DateTime.Now;
-        //this.generateMap(0, 50, -100, 50, true);
-        //Debug.Log("time: " + (System.DateTime.Now - before).TotalMilliseconds);
+        bm = new BiomeManager(fm);
+        bm.setSeed(seed);
     }
 
     public void Update()
@@ -36,50 +31,50 @@ public class MapGeneratorScript : MonoBehaviour
 
         if (Input.GetKeyDown("i"))
         {
-            this.generateNearbyUnloadedChunks();
+            localInventory.listInventory();
+            globalInventory.listInventory();
         }
 
-        if (Input.GetKeyDown("c"))
+        if (Input.GetKeyDown("h"))
         {
-            this.unloadFarAwayChunks();
+            Debug.Log("Moving local inventory to global inventory");
+            fm.moveLocalInventoryToGlobalInventory();
         }
 
     }
-
 
     int index = 0;
     public void FixedUpdate()
     {
         index++;
 
-        if (index % 49 == 0)
+        if (index % 5 == 0)
         {
             this.generateNearbyUnloadedChunks();
         }
-        if (index % 25 == 0)
+        if (index % 50 == 0)
         {
             this.unloadFarAwayChunks();
         }
     }
 
     private void unloadFarAwayChunks()
-    {
+    { 
         Vector3 pos = GameObject.FindGameObjectWithTag("Player").transform.position;
         for (int i = 0; i < loadedChunkCoordinates.Count; i++)
         {
             Coordinate c = (Coordinate)loadedChunkCoordinates[i];
             if (c.isWithinSight(pos, sightHalfWidth*2, sightHalfHeight*2, chunkSize)) continue; // corrects for assymetry
-            {                                                                                   // jestli jsem nic neposral, that is
-                StartCoroutine(this.removeChunkAt(c, true));
+            {                                                                                   // jestli jsem nic neposral
+                this.removeChunkAtNew(c);
                 loadedChunkCoordinates.Remove(c);
                 i--;
             }
         }
     }
 
-    public void generateNearbyUnloadedChunks() // what even is optimization
+    public void generateNearbyUnloadedChunks()
     {
-
         Vector3 pos = GameObject.FindGameObjectWithTag("Player").transform.position;
         int drillX = (int)pos.x;
         int drillY = (int)pos.y;
@@ -89,61 +84,38 @@ public class MapGeneratorScript : MonoBehaviour
         {
             Coordinate c = new Coordinate(possibleX, possibleY);
             if (c.isWithinSight(pos, sightHalfWidth, sightHalfHeight, chunkSize))
-                this.attemptToGenerateChunk(new Coordinate(possibleX, possibleY), true);
-            
-        }
-    }
-
-    IEnumerator removeChunkAt(Coordinate c, bool hardLoad)
-    {
-        DateTime before = System.DateTime.Now;
-
-        for (int x = c.x; x < c.x + chunkSize; x++)
-            for (int y = c.y; y > c.y - chunkSize; y--)
-            {
-                removeBlockAt(x, y);
-                if (!hardLoad) yield return null;
+            { 
+                if (c.isInArray(loadedChunkCoordinates)) continue;
+                loadedChunkCoordinates.Add(c);
+                bm.getBiomeAt(possibleX).actuallyGenerateChunk(c);
+                return;
             }
-        Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
+
+        }
     }
 
-    public void attemptToGenerateChunk(Coordinate c, bool hardLoad)
-    {
-        if (c.isInArray(loadedChunkCoordinates)) return;
-        loadedChunkCoordinates.Add(c);
-        StartCoroutine(this.actuallyGenerateChunk(c, hardLoad));
-    }
-
-    IEnumerator actuallyGenerateChunk(Coordinate c, bool hardLoad)
+    public void removeChunkAtNew(Coordinate c)
     {
         DateTime before = System.DateTime.Now;
 
-        for (int x = c.x; x < c.x + chunkSize; x++)
-        for (int y = c.y; y > c.y - chunkSize; y--)
+        GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+        int destroyedCount = 0;
+
+        for (int i = blocks.Length - 1; i >= 0; i--)
         {
-                
-            if (y > 0) continue;
-            if (fm.isDestroyed(x, y)) continue;
-            //Debug.Log("Creating block at: " + x + "/" + y);
-            Instantiate(computeBlockAt(x, y, seed), new Vector3(x, y, 0), Quaternion.identity);
-            if (!hardLoad) yield return null;
+            if (blocks[i].transform.position.x >= c.x &&
+                blocks[i].transform.position.x < c.x + chunkSize &&
+                blocks[i].transform.position.y <= c.y &&
+                blocks[i].transform.position.y > c.y - chunkSize)
+            {
+                Destroy(blocks[i]);
+                destroyedCount++;
+                if (destroyedCount >= chunkSize * chunkSize) break;
+            }
         }
-        yield return null;
-        Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
-    }
 
-    public GameObject computeBlockAt(int x, int y, int seed)
-    {
-        y = -y;
-        h.setHash(x, y, seed);
-        if (y < 3) return dirt;
-        else if (y == 3 && (h.v % 2 == 0 || h.v % 3 == 0)) return dirt;
-        else if ((y == 4 || y == 5) && h.v % 2 == 0) return dirt;
-        else if (h.v < 10000) return gold;
-        else return stone;
+        //Debug.Log("time to unload chunk using new: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
     }
-
-   
 
     public void removeBlockAt(int x, int y)
     {
@@ -160,56 +132,201 @@ public class MapGeneratorScript : MonoBehaviour
             }
         }
     }
+
+    public void setSeed(int newSeed)
+    {
+        bm.seed = newSeed;
+    }
+}
+public class BiomeManager
+{
+
+    public Desert desert;
+    public Base realBase; // base je keyword takze to nemuzu pouzit lmao
+    public Hash h;
+    public int seed;
+    public int chunkSize = 10;
+    public FileManager fm;
+
+    public BiomeManager(FileManager fm)
+    {
+        h = new Hash();
+
+        //h.setNewHash(589, 154, 12345);
+
+
+        this.fm = fm;
+        desert = new Desert(this, fm);
+        realBase = new Base(this, fm);
+    }
+
+    public Biome getBiomeAt(int x)
+    {
+        if (x >= 0 && x < 20)
+            return realBase;
+        else
+            return desert;
+    }
+
+    public void setSeed(int newSeed)
+    {
+        seed = newSeed;
+    }
+
 }
 
-public class Hash
+public abstract class Biome 
+{
+    public GameObject dirt;
+    public GameObject stone;
+    public GameObject sand;
+    public GameObject sandstone;
+    public GameObject grass;
+
+    public GameObject iron;
+    public GameObject gold;
+    public GameObject copper;
+    public GameObject diamond;
+    public GameObject emerald;
+
+    public GameObject GameObject;
+
+    public GameObject error;
+
+    public BiomeManager bm;
+    public FileManager fm;
+
+    public Biome(BiomeManager bm, FileManager fm)
+    {
+
+        this.bm = bm;
+        this.fm = fm;
+
+        dirt =      (GameObject)Resources.Load("Dirt Variant",      typeof(GameObject));
+        stone =     (GameObject)Resources.Load("Stone Variant",     typeof(GameObject));
+        sand =      (GameObject)Resources.Load("Sand Variant",      typeof(GameObject));
+        sandstone = (GameObject)Resources.Load("Sandstone Variant", typeof(GameObject));
+        grass =     (GameObject)Resources.Load("Grass Variant",     typeof(GameObject));
+
+        iron =      (GameObject)Resources.Load("Iron Variant",      typeof(GameObject));
+        gold =      (GameObject)Resources.Load("Gold Variant",      typeof(GameObject));
+        copper =    (GameObject)Resources.Load("Copper Variant",    typeof(GameObject));
+        diamond =   (GameObject)Resources.Load("Diamond Variant",   typeof(GameObject));
+        emerald =   (GameObject)Resources.Load("Emerald Variant",   typeof(GameObject));
+        
+        error =     (GameObject)Resources.Load("Error Variant",     typeof(GameObject));
+
+
+    }
+
+    public abstract GameObject getBlockAt(int x, int y);
+    public abstract void actuallyGenerateChunk(Coordinate c);
+}
+
+public class Desert : Biome
+{
+
+    public Desert(BiomeManager bm, FileManager fm) :  base(bm, fm)
+    {
+        Debug.Log("Desert biome created; dirt = " + dirt);
+    }
+
+    public override GameObject getBlockAt(int x, int y)
+    {
+        y = -y;
+
+        if (y < 3) return sand;
+        bm.h.setNewHash(x, y, bm.seed);
+        
+        if (y == 3 && (bm.h.v % 2 == 0 || bm.h.v % 3 == 0)) return sand;
+        else if ((y == 4 || y == 5) && bm.h.v % 2 == 0) return sand;
+        else if (bm.h.v < 10000) return copper;
+        else if (bm.h.v < 20000) return diamond;
+        else if (bm.h.v < 30000) return iron;
+        else if (bm.h.v < 40000) return emerald;
+
+        else return sandstone;
+    }
+
+    public override void actuallyGenerateChunk(Coordinate c)
+    {
+        DateTime before = System.DateTime.Now;
+
+        for (int x = c.x; x < c.x + bm.chunkSize; x++)
+        for (int y = c.y; y > c.y - bm.chunkSize; y--)
+        {
+
+            if (y > 0) continue;
+            if (fm.isDestroyed(x, y)) continue;
+
+                GameObject.Instantiate(this.getBlockAt(x, y), new Vector3(x, y, 0), Quaternion.identity);
+            }
+        //Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
+    }
+}
+
+public class Base : Biome
+{
+
+    public Base(BiomeManager bm, FileManager fm) : base(bm, fm)
+    {
+        dirt = (GameObject)Resources.Load("Dirt Variant", typeof(GameObject));
+        Debug.Log("base (really base) biome created");
+    }
+
+    public override GameObject getBlockAt(int x, int y)
+    {
+        y = -y;
+        
+        bm.h.setNewHash(x, y, bm.seed);
+
+        if (y == 0) return grass;
+        if (y < 3) return dirt;
+        else if (y == 3 && (bm.h.v % 2 == 0 || bm.h.v % 3 == 0)) return dirt;
+        else if ((y == 4 || y == 5) && bm.h.v % 2 == 0) return dirt;
+        else if (bm.h.v < 10000) return gold;
+        else return stone;
+
+        //return null;
+    }
+
+    public override void actuallyGenerateChunk(Coordinate c)
+    {
+        DateTime before = System.DateTime.Now;
+
+        for (int x = c.x; x < c.x + bm.chunkSize; x++)
+        for (int y = c.y; y > c.y - bm.chunkSize; y--)
+        {
+
+            if (y > 0) continue;
+
+            if (fm.isDestroyed(x, y)) continue;
+
+                GameObject.Instantiate(this.getBlockAt(x, y), new Vector3(x, y, 0), Quaternion.identity);
+            }
+        //Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
+    }
+}
+
+
+public class Hash /////////////////////////////////////////////////
 {
 
     public int v;
 
-    public void setHash(int x, int y, int seed)  
+    public void setNewHash(int x, int y, int seed)
     {
-        double x1 = Math.Pow(Math.Pow(x, 8) + seed * 8, 1f / 2f) / ((x > 0 ? (x % 64) : 1) + 2);
-        double y1 = Math.Pow(Math.Pow(y, 7) + seed * 3.5, 1f / 3f) / ((y > 0 ? (y % 59) : 1) + 2);
-        double big = Math.E * Math.Pow(x1, 0.5) * Math.Pow(y1, 0.5) / seed;
-        big *= (this.getFullDecimal(x1 * y1 * Math.Pow(big, 0.5)) + seed % 8) * Math.Pow(seed, 0.25);
-        if (x < 0) big *= Math.Pow(seed / 18.5, 19f / 41f);
-        v = int.Parse(this.getPart(big));
-        //Debug.Log("x: " + x + ", y: " + y + ", v: " + v);
-    }
+        seed = 12345;
+        double x1 = Math.Pow(x+1, 19f / 59f);
+        double y1 = Math.Pow(y+1, 41f / 59f);
+        double rootSeed = Math.Pow(seed, 31 / 59f);
 
-    private double getFullDecimal(double input)
-    {
-        //String s = input.ToString();
-        string s = input.ToString("F99").TrimEnd('0');
-        //return double.Parse(input.ToString().Substring(input.ToString().IndexOf(".") + 1).Replace("E","").Replace("+","").Replace("-", ""));
-        try
-        {
-            return double.Parse(input.ToString().Substring(s.IndexOf(".") + 1));
-        }
-        catch (Exception e)
-        {
-            Debug.Log("problem");
-            return 12456789; 
-        }
-    }
+        double big = x1 * y1 * rootSeed;
+        double cut = big - Math.Floor(big);
 
-    private string getPart(double input)
-    {
-        string s = input.ToString();
-        int index = s.IndexOf(".");
-        try { return reverseString(s.Substring(index + 1, 5));} catch (Exception e){}
-        try { return reverseString(s.Substring(index -5, 5));}  catch (Exception e){}
-        Debug.Log("pruser jak brno in mapgen.getpart");
-        return "99999";
-    }
+        v = (int)Math.Floor(cut * 100000);
 
-    private String reverseString(String str)
-    {
-        char[] chars = str.ToCharArray();
-        char[] result = new char[chars.Length];
-        for (int i = 0, j = str.Length - 1; i < str.Length; i++, j--)
-            result[i] = chars[j];
-        return new string(result);
+        if (v == 0) v = -1;
     }
 }
+
