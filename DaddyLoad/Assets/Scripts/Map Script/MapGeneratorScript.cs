@@ -4,6 +4,7 @@ using System.Threading;
 using System;
 using Photon.Pun;
 using UnityEngine;
+using Random = System.Random;
 
 public class MapGeneratorScript : MonoBehaviour
 {
@@ -51,6 +52,26 @@ public class MapGeneratorScript : MonoBehaviour
         {
             Debug.Log("Saving global inventory to file");
             fm.writeDownGlobalInventory();
+        }
+
+        if (Input.GetKeyDown("t"))
+        {
+            GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(5000, 0, 0);
+            
+        }
+
+        if (Input.GetKeyDown("r"))
+        {
+            int total = 0;
+            foreach(KeyValuePair<GameObject, int> pair in bm.desert.count)
+            {
+                total += pair.Value;
+            }
+
+            foreach (KeyValuePair<GameObject, int> pair in bm.desert.count)
+            {
+                Debug.Log("Material: " + pair.Key + " has percent: " + 100*(float)pair.Value / (float)total);
+            }
         }
 
 
@@ -201,6 +222,11 @@ public abstract class Biome
     public GameObject copper;
     public GameObject diamond;
     public GameObject emerald;
+    public GameObject magmastone;
+    public GameObject magma;
+    public GameObject pinkore;
+    public GameObject silver;
+
 
     public GameObject GameObject;
 
@@ -226,7 +252,11 @@ public abstract class Biome
         copper =    (GameObject)Resources.Load("Copper Variant",    typeof(GameObject));
         diamond =   (GameObject)Resources.Load("Diamond Variant",   typeof(GameObject));
         emerald =   (GameObject)Resources.Load("Emerald Variant",   typeof(GameObject));
-        
+        magmastone =(GameObject)Resources.Load("Magmastone Variant",typeof(GameObject));
+        magma =     (GameObject)Resources.Load("Magma Variant",     typeof(GameObject));
+        pinkore =   (GameObject)Resources.Load("Pinkore Variant",   typeof(GameObject));
+        silver =    (GameObject)Resources.Load("Silver Variant",    typeof(GameObject));
+
         error =     (GameObject)Resources.Load("Error Variant",     typeof(GameObject));
 
 
@@ -239,31 +269,57 @@ public abstract class Biome
 public class Desert : Biome
 {
 
+    public Dictionary<GameObject, int> count = new Dictionary<GameObject, int>();
+
     public Desert(BiomeManager bm, FileManager fm) :  base(bm, fm)
     {
-        Debug.Log("Desert biome created; dirt = " + dirt);
+        count.Add(copper, 0);
+        count.Add(diamond, 0);
+        count.Add(iron, 0);
+        count.Add(emerald, 0);
+        count.Add(magma, 0);
+        count.Add(magmastone, 0);
+        count.Add(pinkore, 0);
+        count.Add(silver, 0);
+        count.Add(stone, 0);
+        count.Add(sandstone, 0);
+
     }
 
     public override GameObject getBlockAt(int x, int y)
     {
+        GameObject output;
         y = -y;
-
+       
         if (y < 3) return sand;
         bm.h.setNewHash(x, y, bm.seed);
-        
+
         if (y == 3 && (bm.h.v % 2 == 0 || bm.h.v % 3 == 0)) return sand;
         else if ((y == 4 || y == 5) && bm.h.v % 2 == 0) return sand;
-        else if (bm.h.v < 10000) return copper;
-        else if (bm.h.v < 20000) return diamond;
-        else if (bm.h.v < 30000) return iron;
-        else if (bm.h.v < 40000) return emerald;
+        else if (bm.h.v < 10000) output = copper;
+        else if (bm.h.v < 20000) output = diamond;
+        else if (bm.h.v < 30000) output = iron;
+        else if (bm.h.v < 40000) output = emerald;
+        else if (bm.h.v < 50000) output = magma;
+        else if (bm.h.v < 60000) output = magmastone;
+        else if (bm.h.v < 70000) output = pinkore;
+        else if (bm.h.v < 80000) output = silver;
+        else if (bm.h.v < 90000) output = stone;
 
-        else return sandstone;
+        else output = sandstone;
+
+        try
+        {
+            count[output] = count[output] + 1;
+        }
+        catch (Exception e) { };
+
+        return output;
     }
 
     public override void actuallyGenerateChunk(Coordinate c)
     {
-        DateTime before = System.DateTime.Now;
+        //DateTime before = System.DateTime.Now;
 
         for (int x = c.x; x < c.x + bm.chunkSize; x++)
         for (int y = c.y; y > c.y - bm.chunkSize; y--)
@@ -283,8 +339,7 @@ public class Base : Biome
 
     public Base(BiomeManager bm, FileManager fm) : base(bm, fm)
     {
-        dirt = (GameObject)Resources.Load("Dirt Variant", typeof(GameObject));
-        Debug.Log("base (really base) biome created");
+
     }
 
     public override GameObject getBlockAt(int x, int y)
@@ -305,7 +360,7 @@ public class Base : Biome
 
     public override void actuallyGenerateChunk(Coordinate c)
     {
-        DateTime before = System.DateTime.Now;
+        //DateTime before = System.DateTime.Now;
 
         for (int x = c.x; x < c.x + bm.chunkSize; x++)
         for (int y = c.y; y > c.y - bm.chunkSize; y--)
@@ -326,20 +381,20 @@ public class Hash /////////////////////////////////////////////////
 {
 
     public int v;
+    public float more50;
+    public float less50;
+    public bool shouldBeTrulyRandom = false;
 
     public void setNewHash(int x, int y, int seed)
     {
-        seed = 12345;
-        double x1 = Math.Pow(x+1, 19f / 59f);
-        double y1 = Math.Pow(y+1, 41f / 59f);
-        double rootSeed = Math.Pow(seed, 31 / 59f);
 
-        double big = x1 * y1 * rootSeed;
-        double cut = big - Math.Floor(big);
+        double x1 = Math.Pow(x + 1, 19f / 59f);
+        double y1 = Math.Pow(y + 1, 41f / 59f);
+        double big = x1 * y1 * Math.Pow(seed, 31f / 59f) * Mathf.PI;
 
-        v = (int)Math.Floor(cut * 100000);
+        v = (int)(100000 * new Random((int)((big - Math.Floor(big)) * 2100000000)).NextDouble());
 
-        if (v == 0) v = -1;
     }
+
 }
 
