@@ -73,7 +73,8 @@ public class PlayerStats : MonoBehaviour
 
         if (Input.GetKeyDown("tab"))
         {
-            transform.Find("Canvas").Find("RadiationBar").gameObject.SetActive(!transform.Find("Canvas").Find("RadiationBar").gameObject.activeSelf);
+            transform.Find("Canvas").gameObject.SetActive(!transform.Find("Canvas").gameObject.activeSelf);
+
         }
 
 
