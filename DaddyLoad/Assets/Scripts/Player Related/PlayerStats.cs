@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    //Meter angle constants
+    public const float MIN_ANGLE = 232.0f;
+    public const float MAX_ANGLE = -53.0f;
+
+    public float totalAngle;
+
     //HP
     public float HP;
     public float maxHP;
@@ -32,16 +38,17 @@ public class PlayerStats : MonoBehaviour
 
     private void Start()
     {
+        totalAngle = Mathf.Abs(MAX_ANGLE - MIN_ANGLE);
         HP = maxHP;
         radiation = 0;
         HealthBar = transform.Find("Canvas").Find("HealthBar").Find("HealthBar Fill");
-        pressureNeedle = transform.Find("Canvas").Find("PressureBar").Find("Pressure Needle");
-        minPressureNeedle = transform.Find("Canvas").Find("PressureBar").Find("Pressure Min Threshold");
-        maxPressureNeedle = transform.Find("Canvas").Find("PressureBar").Find("Pressure Max Threshold");
-        RadiationBar = transform.Find("Canvas").Find("RadiationBar").Find("RadiationBar Fill");
-        temperatureNeedle = transform.Find("Canvas").Find("TemperatureBar").Find("Temperature Needle");
-        minTemperatureNeedle = transform.Find("Canvas").Find("TemperatureBar").Find("Temperature Min Threshold");
-        maxTemperatureNeedle = transform.Find("Canvas").Find("TemperatureBar").Find("Temperature Max Threshold");
+        pressureNeedle = transform.Find("Canvas").Find("Control Panel").Find("PressureBar").Find("Pressure Needle");
+        minPressureNeedle = transform.Find("Canvas").Find("Control Panel").Find("PressureBar").Find("Pressure Min Threshold");
+        maxPressureNeedle = transform.Find("Canvas").Find("Control Panel").Find("PressureBar").Find("Pressure Max Threshold");
+        RadiationBar = transform.Find("Canvas").Find("Control Panel").Find("RadiationBar").Find("RadiationBar Fill");
+        temperatureNeedle = transform.Find("Canvas").Find("Control Panel").Find("TemperatureBar").Find("Temperature Needle");
+        minTemperatureNeedle = transform.Find("Canvas").Find("Control Panel").Find("TemperatureBar").Find("Temperature Min Threshold");
+        maxTemperatureNeedle = transform.Find("Canvas").Find("Control Panel").Find("TemperatureBar").Find("Temperature Max Threshold");
 
         updatePressure();
         updateRadiation();
@@ -51,13 +58,13 @@ public class PlayerStats : MonoBehaviour
     private void Update()
     {
         //set pressure
-        if (Input.GetKeyDown("q"))
+        if (Input.GetKey("q"))
         {
-            setPressure(pressure-10);
+            setPressure(pressure-1);
         }
-        if (Input.GetKeyDown("e"))
+        if (Input.GetKey("e"))
         {
-            setPressure(pressure + 10);
+            setPressure(pressure + 1);
         }
 
         //set temperature
@@ -73,9 +80,7 @@ public class PlayerStats : MonoBehaviour
 
         if (Input.GetKeyDown("tab"))
         {
-            transform.Find("Canvas").Find("PressureBar").gameObject.SetActive(!transform.Find("Canvas").Find("PressureBar").gameObject.activeSelf);
-            transform.Find("Canvas").Find("RadiationBar").gameObject.SetActive(!transform.Find("Canvas").Find("RadiationBar").gameObject.activeSelf);
-            transform.Find("Canvas").Find("TemperatureBar").gameObject.SetActive(!transform.Find("Canvas").Find("TemperatureBar").gameObject.activeSelf);
+            transform.Find("Canvas").Find("Control Panel").gameObject.SetActive(!transform.Find("Canvas").Find("Control Panel").gameObject.activeSelf);
 
         }
 
@@ -147,9 +152,9 @@ public class PlayerStats : MonoBehaviour
     //Updates all pressure needle UI, called only when there is a change in pressure or thresholds
     public void updatePressure()
     {
-        pressureNeedle.localPosition = new Vector3(2 * pressure / maxPressure * 100 - 100, 0, 0);
-        minPressureNeedle.localPosition = new Vector3(2 * minPressureThreshold / maxPressure * 100 - 100, 0, 0);
-        maxPressureNeedle.localPosition = new Vector3(2 * maxPressureThreshold / maxPressure * 100 - 100, 0, 0);
+        pressureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(pressure, maxPressure));
+        //minPressureNeedle.localPosition = new Vector3(2 * minPressureThreshold / maxPressure * 100 - 100, 0, 0);
+        //maxPressureNeedle.localPosition = new Vector3(2 * maxPressureThreshold / maxPressure * 100 - 100, 0, 0);
     }
 
     //updates Radiation UI
@@ -199,8 +204,15 @@ public class PlayerStats : MonoBehaviour
     //updates all temperature UI
     public void updateTemperature()
     {
-        temperatureNeedle.localPosition = new Vector3(2 * temperature / (maxTemperature-minTemperature) * 100 - 100, 0, 0);
-        minTemperatureNeedle.localPosition = new Vector3(2 * minTemperatureThreshold / (maxTemperature - minTemperature) * 100 - 100, 0, 0);
-        maxTemperatureNeedle.localPosition = new Vector3(2 * maxTemperatureThreshold / (maxTemperature - minTemperature) * 100 - 100, 0, 0);
+        temperatureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(temperature, maxTemperature));
+        //temperatureNeedle.localPosition = new Vector3(2 * temperature / (maxTemperature-minTemperature) * 100 - 100, 0, 0);
+        //minTemperatureNeedle.localPosition = new Vector3(2 * minTemperatureThreshold / (maxTemperature - minTemperature) * 100 - 100, 0, 0);
+        //maxTemperatureNeedle.localPosition = new Vector3(2 * maxTemperatureThreshold / (maxTemperature - minTemperature) * 100 - 100, 0, 0);
+    }
+
+    public float getNeedleRotation(float value, float maxValue)
+    {
+        float normalizedValue = value / maxValue;
+        return MIN_ANGLE - normalizedValue * totalAngle;
     }
 }
