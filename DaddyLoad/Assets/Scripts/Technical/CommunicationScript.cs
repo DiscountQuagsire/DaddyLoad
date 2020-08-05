@@ -46,6 +46,9 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         if (segmented[0] == "materialupdate")
             updateGlobalInventoryMaterial(segmented[1], int.Parse(segmented[2]));
 
+        if (segmented[0] == "mastersaveinv")
+            writeDownGlobalInventory();
+
     }
 
     // locally called metoda ktera updatne 1 material v mgs.globalinventory
@@ -76,6 +79,13 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         Debug.Log("receiving map info: " + mapInfo);
         fm().loadDestroyedBlockCoordinatesFromString(mapInfo);
        
+    }
+
+    private void writeDownGlobalInventory()
+    {
+        if (PhotonNetwork.IsMasterClient)
+            fm().writeDownGlobalInventory();
+
     }
 
 

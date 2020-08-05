@@ -9,6 +9,7 @@ using System;
 public class FileManager : MonoBehaviour
 {
     public ArrayList destroyedBlockCoords = new ArrayList();
+    public ArrayList unwrittenBlockCoords = new ArrayList();
     public MapGeneratorScript mgs;
 
     public void Start()
@@ -27,7 +28,18 @@ public class FileManager : MonoBehaviour
     {
         //File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + ", " + y + "\n");
         destroyedBlockCoords.Add(new Coordinate(x, y));
+        unwrittenBlockCoords.Add(new Coordinate(x, y));
         //Debug.Log("writing block destroy at: " + x + ", " + y);
+    }
+
+    public void writeUnwrittenBlocksToFile()
+    {
+        Debug.Log("Saving map");
+        foreach (Coordinate c in unwrittenBlockCoords)
+        {
+            File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", c.x + ", " + c.y + "\n");
+        }
+        unwrittenBlockCoords.Clear();
     }
 
     public void reloadEmptyBlocksFromOwnFiles()
@@ -90,7 +102,7 @@ public class FileManager : MonoBehaviour
         }
 
         mgs.globalInventory.materials = globalMaterials;
-        Debug.Log("New global inventory: ");
+        Debug.Log("New global inventory on next line: ");
         mgs.globalInventory.listInventory();
         localMaterials.Clear();
     }
@@ -104,6 +116,7 @@ public class FileManager : MonoBehaviour
         {
             cs.photonView.RPC("receiveMessage", RpcTarget.Others, "materialupdate/" + pair.Key + "/" + pair.Value);
         }
+        cs.photonView.RPC("receiveMessage", RpcTarget.All, "mastersaveinv");
     }
 
     public Dictionary<string, int> getDictionaryFromGlobalInventory()
@@ -132,6 +145,32 @@ public class FileManager : MonoBehaviour
             destroyedBlockCoords.Add(newCoord);
         }
     }
+
+    public void loadPlayerUpgradesFromFile(string name)
+    {
+        // name/drill/hpressure/lpressure/htemp/ltemp/rad/fuel/cargo
+        // 0    1     2         3         4     5     6   7    8
+
+        string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/playerinfo.txt");
+        foreach (string line in input)
+        {
+            string[] segmented = line.Split('/');
+            if (segmented[0] != name) continue;
+
+            int drill = int.Parse(segmented[1]);
+            int hPressure = int.Parse(segmented[2]);
+            int lPressure = int.Parse(segmented[3]);
+            int hTemp = int.Parse(segmented[4]);
+            int lTemp = int.Parse(segmented[5]);
+            int rad = int.Parse(segmented[6]);
+            int fuel = int.Parse(segmented[7]);
+            int cargo = int.Parse(segmented[8]);
+
+            return; // o p t i m i y e d
+
+        }
+    }
+
 }
 
 public class Inventory

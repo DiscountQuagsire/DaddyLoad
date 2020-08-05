@@ -1,0 +1,7 @@
+iron/1
+emerald/3
+diamond/2
+copper/2
+magma/1
+silver/1
+gold/2

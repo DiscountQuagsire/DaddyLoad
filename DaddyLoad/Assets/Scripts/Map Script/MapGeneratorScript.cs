@@ -29,7 +29,6 @@ public class MapGeneratorScript : MonoBehaviour
 
     public void Update()
     {
-
         if (Input.GetKeyDown("i"))
         {
             localInventory.listInventory();
@@ -38,40 +37,14 @@ public class MapGeneratorScript : MonoBehaviour
 
         if (Input.GetKeyDown("h"))
         {
-            Debug.Log("Moving local inventory to global inventory");
+            Debug.Log("Local to global; updating for everyone");
             fm.moveLocalInventoryToGlobalInventory();
-        }
-
-        if (Input.GetKeyDown("j"))
-        {
-            Debug.Log("Updating global inventory for everyone");
             fm.updateGlobalInventoryForEveryone();
         }
 
         if (Input.GetKeyDown("k"))
         {
-            Debug.Log("Saving global inventory to file");
-            fm.writeDownGlobalInventory();
-        }
-
-        if (Input.GetKeyDown("t"))
-        {
-            GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(5000, 0, 0);
-            
-        }
-
-        if (Input.GetKeyDown("r"))
-        {
-            int total = 0;
-            foreach(KeyValuePair<GameObject, int> pair in bm.desert.count)
-            {
-                total += pair.Value;
-            }
-
-            foreach (KeyValuePair<GameObject, int> pair in bm.desert.count)
-            {
-                Debug.Log("Material: " + pair.Key + " has percent: " + 100*(float)pair.Value / (float)total);
-            }
+            fm.writeUnwrittenBlocksToFile();
         }
 
 
@@ -217,20 +190,29 @@ public abstract class Biome
     public GameObject sandstone;
     public GameObject grass;
 
+    public GameObject bronze;
+    public GameObject plastic;
+    public GameObject aluminum;
     public GameObject iron;
+    public GameObject silver;
+    public GameObject lead;
     public GameObject gold;
     public GameObject copper;
+    public GameObject platinum;
+    public GameObject iridium;
+    public GameObject titanium;
     public GameObject diamond;
     public GameObject emerald;
     public GameObject magmastone;
     public GameObject magma;
     public GameObject pinkore;
-    public GameObject silver;
+    
 
 
     public GameObject GameObject;
 
     public GameObject error;
+    public GameObject background1;
 
     public BiomeManager bm;
     public FileManager fm;
@@ -247,19 +229,27 @@ public abstract class Biome
         sandstone = (GameObject)Resources.Load("Sandstone Variant", typeof(GameObject));
         grass =     (GameObject)Resources.Load("Grass Variant",     typeof(GameObject));
 
+        bronze =    (GameObject)Resources.Load("Bronze Variant",    typeof(GameObject));
+        plastic =   (GameObject)Resources.Load("Plastic Variant",   typeof(GameObject));
+        aluminum =  (GameObject)Resources.Load("Aluminum Variant",  typeof(GameObject));
         iron =      (GameObject)Resources.Load("Iron Variant",      typeof(GameObject));
+        silver =    (GameObject)Resources.Load("Silver Variant",    typeof(GameObject));
+        lead =      (GameObject)Resources.Load("Lead Variant",      typeof(GameObject));
         gold =      (GameObject)Resources.Load("Gold Variant",      typeof(GameObject));
         copper =    (GameObject)Resources.Load("Copper Variant",    typeof(GameObject));
+        platinum =  (GameObject)Resources.Load("Platinum Variant",  typeof(GameObject));
+        iridium =   (GameObject)Resources.Load("Iridium Variant",   typeof(GameObject));
+        titanium =  (GameObject)Resources.Load("Titanium Variant",  typeof(GameObject));
         diamond =   (GameObject)Resources.Load("Diamond Variant",   typeof(GameObject));
+
         emerald =   (GameObject)Resources.Load("Emerald Variant",   typeof(GameObject));
         magmastone =(GameObject)Resources.Load("Magmastone Variant",typeof(GameObject));
         magma =     (GameObject)Resources.Load("Magma Variant",     typeof(GameObject));
         pinkore =   (GameObject)Resources.Load("Pinkore Variant",   typeof(GameObject));
-        silver =    (GameObject)Resources.Load("Silver Variant",    typeof(GameObject));
+        
 
         error =     (GameObject)Resources.Load("Error Variant",     typeof(GameObject));
-
-
+        background1=(GameObject)Resources.Load("Background Blocks/Background Underground 1 Variant",     typeof(GameObject));
     }
 
     public abstract GameObject getBlockAt(int x, int y);
@@ -271,50 +261,36 @@ public class Desert : Biome
 
     public Dictionary<GameObject, int> count = new Dictionary<GameObject, int>();
 
-    public Desert(BiomeManager bm, FileManager fm) :  base(bm, fm)
-    {
-        count.Add(copper, 0);
-        count.Add(diamond, 0);
-        count.Add(iron, 0);
-        count.Add(emerald, 0);
-        count.Add(magma, 0);
-        count.Add(magmastone, 0);
-        count.Add(pinkore, 0);
-        count.Add(silver, 0);
-        count.Add(stone, 0);
-        count.Add(sandstone, 0);
-
-    }
+    public Desert(BiomeManager bm, FileManager fm) :  base(bm, fm) { }
 
     public override GameObject getBlockAt(int x, int y)
     {
-        GameObject output;
         y = -y;
-       
+
         if (y < 3) return sand;
+
         bm.h.setNewHash(x, y, bm.seed);
 
         if (y == 3 && (bm.h.v % 2 == 0 || bm.h.v % 3 == 0)) return sand;
-        else if ((y == 4 || y == 5) && bm.h.v % 2 == 0) return sand;
-        else if (bm.h.v < 10000) output = copper;
-        else if (bm.h.v < 20000) output = diamond;
-        else if (bm.h.v < 30000) output = iron;
-        else if (bm.h.v < 40000) output = emerald;
-        else if (bm.h.v < 50000) output = magma;
-        else if (bm.h.v < 60000) output = magmastone;
-        else if (bm.h.v < 70000) output = pinkore;
-        else if (bm.h.v < 80000) output = silver;
-        else if (bm.h.v < 90000) output = stone;
 
-        else output = sandstone;
 
-        try
-        {
-            count[output] = count[output] + 1;
-        }
-        catch (Exception e) { };
 
-        return output;
+        else if (y >= 450 && y < 500 && bm.h.v >= 0 && bm.h.v < 1000) return diamond;
+        else if (y >= 400 && y < 500 && bm.h.v >= 1000 && bm.h.v < 2000) return titanium;
+        else if (y >= 350 && y < 500 && bm.h.v >= 2000 && bm.h.v < 3000) return iridium;
+        else if (y >= 300 && y < 500 && bm.h.v >= 3000 && bm.h.v < 4000) return platinum;
+        else if (y >= 250 && y < 500 && bm.h.v >= 4000 && bm.h.v < 5000) return copper;
+        else if (y >= 150 && y < 350 && bm.h.v >= 5000 && bm.h.v < 6500) return gold;
+        else if (y >= 150 && y < 180 && bm.h.v >= 6500 && bm.h.v < 8000) return lead;
+        else if (y >= 100 && y < 300 && bm.h.v >= 8000 && bm.h.v < 9500) return silver;
+        else if (y >= 50 && y < 150 && bm.h.v >= 9500 && bm.h.v < 11000) return iron;
+        else if (y >= 40 && y < 150 && bm.h.v >= 11000 && bm.h.v < 12500) return aluminum;
+        else if (y >= 10 && y < 120 && bm.h.v >= 12500 && bm.h.v < 15000) return plastic;
+        else if (y >= 10 && y < 120 && bm.h.v >= 15000 && bm.h.v < 17500) return bronze;
+
+        return sandstone;
+
+       
     }
 
     public override void actuallyGenerateChunk(Coordinate c)
@@ -326,21 +302,24 @@ public class Desert : Biome
         {
 
             if (y > 0) continue;
-            if (fm.isDestroyed(x, y)) continue;
+
+            if (fm.isDestroyed(x, y))
+            {
+                GameObject.Instantiate(background1, new Vector3(x, y, 0), Quaternion.identity);
+                continue;
+            }
 
                 GameObject.Instantiate(this.getBlockAt(x, y), new Vector3(x, y, 0), Quaternion.identity);
             }
         //Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
     }
+
 }
 
 public class Base : Biome
 {
 
-    public Base(BiomeManager bm, FileManager fm) : base(bm, fm)
-    {
-
-    }
+    public Base(BiomeManager bm, FileManager fm) : base(bm, fm){}
 
     public override GameObject getBlockAt(int x, int y)
     {
@@ -354,8 +333,6 @@ public class Base : Biome
         else if ((y == 4 || y == 5) && bm.h.v % 2 == 0) return dirt;
         else if (bm.h.v < 10000) return gold;
         else return stone;
-
-        //return null;
     }
 
     public override void actuallyGenerateChunk(Coordinate c)
@@ -368,7 +345,11 @@ public class Base : Biome
 
             if (y > 0) continue;
 
-            if (fm.isDestroyed(x, y)) continue;
+                if (fm.isDestroyed(x, y))
+                {
+                    GameObject.Instantiate(background1, new Vector3(x, y, 0), Quaternion.identity);
+                    continue;
+                }
 
                 GameObject.Instantiate(this.getBlockAt(x, y), new Vector3(x, y, 0), Quaternion.identity);
             }
