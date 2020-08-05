@@ -254,6 +254,8 @@ public abstract class Biome
 
     public abstract GameObject getBlockAt(int x, int y);
     public abstract void actuallyGenerateChunk(Coordinate c);
+
+    public abstract float getTemperature(int depth);
 }
 
 public class Desert : Biome
@@ -289,8 +291,6 @@ public class Desert : Biome
         else if (y >= 10 && y < 120 && bm.h.v >= 15000 && bm.h.v < 17500) return bronze;
 
         return sandstone;
-
-       
     }
 
     public override void actuallyGenerateChunk(Coordinate c)
@@ -312,6 +312,12 @@ public class Desert : Biome
                 GameObject.Instantiate(this.getBlockAt(x, y), new Vector3(x, y, 0), Quaternion.identity);
             }
         //Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
+    }
+
+    public override float getTemperature(int depth)
+    {
+        // returni nejakou funkci depth
+        return 0;
     }
 
 }
@@ -355,6 +361,13 @@ public class Base : Biome
             }
         //Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
     }
+
+    public override float getTemperature(int depth)
+    {
+        // returni nejakou funkci depth
+        return 0;
+    }
+
 }
 
 
