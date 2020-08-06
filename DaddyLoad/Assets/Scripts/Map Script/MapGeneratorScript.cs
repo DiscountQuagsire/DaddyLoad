@@ -16,7 +16,7 @@ public class MapGeneratorScript : MonoBehaviour
 
     public ArrayList loadedChunkCoordinates = new ArrayList();
     FileManager fm;
-    BiomeManager bm;
+    public BiomeManager bm;
     public Inventory localInventory = new Inventory();
     public Inventory globalInventory = new Inventory();
 
@@ -255,7 +255,8 @@ public abstract class Biome
     public abstract GameObject getBlockAt(int x, int y);
     public abstract void actuallyGenerateChunk(Coordinate c);
 
-    public abstract float getTemperature(int depth);
+    public abstract float getTemperature(float depth);
+    public abstract float getPressure(float depth);
 }
 
 public class Desert : Biome
@@ -314,10 +315,14 @@ public class Desert : Biome
         //Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
     }
 
-    public override float getTemperature(int depth)
+    public override float getTemperature(float depth)
     {
-        // returni nejakou funkci depth
-        return 0;
+        return depth / 2 + 70;
+    }
+
+    public override float getPressure(float depth)
+    {
+        return depth / 4 + 50;
     }
 
 }
@@ -362,11 +367,16 @@ public class Base : Biome
         //Debug.Log("time to generate chunk: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
     }
 
-    public override float getTemperature(int depth)
+    public override float getTemperature(float depth)
     {
-        // returni nejakou funkci depth
-        return 0;
+        return depth / 2 + 50;
     }
+
+    public override float getPressure(float depth)
+    {
+        return depth / 4 + 50;
+    }
+
 
 }
 

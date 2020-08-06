@@ -58,6 +58,7 @@ public class PlayerStats : MonoBehaviour
     private void Update()
     {
         //set pressure
+        /*
         if (Input.GetKey("q"))
         {
             setPressure(pressure-1);
@@ -83,6 +84,7 @@ public class PlayerStats : MonoBehaviour
             transform.Find("Canvas").Find("Control Panel").gameObject.SetActive(!transform.Find("Canvas").Find("Control Panel").gameObject.activeSelf);
 
         }
+        */
 
 
 
@@ -90,6 +92,9 @@ public class PlayerStats : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+
+        /*
         if (pressure > maxPressureThreshold^pressure<minPressureThreshold) setHP(HP-1);
 
         if (temperature > maxTemperatureThreshold ^ temperature < minTemperatureThreshold) setHP(HP - 1);
@@ -99,6 +104,12 @@ public class PlayerStats : MonoBehaviour
         {
             setRadiation(radiation + 1);
         }
+        */
+
+        //Temperature setting
+
+        setTemperature(GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().bm.getBiomeAt((int)GameObject.FindGameObjectWithTag("Player").transform.position.x).getTemperature((int)GameObject.FindGameObjectWithTag("Player").transform.position.y));
+        setPressure(GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().bm.getBiomeAt((int)GameObject.FindGameObjectWithTag("Player").transform.position.x).getPressure((int)GameObject.FindGameObjectWithTag("Player").transform.position.y));
 
     }
 
