@@ -36,6 +36,8 @@ public class PlayerStats : MonoBehaviour
     private float maxTemperatureThreshold = 70;
     private Transform maxTemperatureNeedle;
 
+    
+
     private void Start()
     {
         totalAngle = Mathf.Abs(MAX_ANGLE - MIN_ANGLE);
@@ -53,6 +55,8 @@ public class PlayerStats : MonoBehaviour
         updatePressure();
         updateRadiation();
         updateTemperature();
+
+
     }
 
     private void Update()
@@ -78,13 +82,9 @@ public class PlayerStats : MonoBehaviour
         {
             setTemperature(temperature + 10);
         }
-
-        if (Input.GetKeyDown("tab"))
-        {
-            transform.Find("Canvas").Find("Control Panel").gameObject.SetActive(!transform.Find("Canvas").Find("Control Panel").gameObject.activeSelf);
-
-        }
         */
+
+        
 
 
 
@@ -226,4 +226,6 @@ public class PlayerStats : MonoBehaviour
         float normalizedValue = value / maxValue;
         return MIN_ANGLE - normalizedValue * totalAngle;
     }
+        
+        
 }
