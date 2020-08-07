@@ -18,9 +18,9 @@ public class PlayerStats : MonoBehaviour
     public float pressure = 50;
     private Transform pressureNeedle;
     private float maxPressure = 100;
-    private float minPressureThreshold = 30;
+    private float minPressureThreshold = 40;
     private Transform minPressureNeedle;
-    private float maxPressureThreshold = 70;
+    private float maxPressureThreshold = 60;
     private Transform maxPressureNeedle;
     //Radiation
     public float radiation;
@@ -94,11 +94,20 @@ public class PlayerStats : MonoBehaviour
     {
 
 
+
+        if (pressure > maxPressureThreshold ^ pressure < minPressureThreshold)
+        {
+            //any damage function
+            setHP(HP - 1);
+        }
+
+        if (temperature > maxTemperatureThreshold ^ temperature < minTemperatureThreshold)
+        {
+            //any damage function
+            setHP(HP - 1);
+        }
+
         /*
-        if (pressure > maxPressureThreshold^pressure<minPressureThreshold) setHP(HP-1);
-
-        if (temperature > maxTemperatureThreshold ^ temperature < minTemperatureThreshold) setHP(HP - 1);
-
         //toggle radiation DPS
         if (Input.GetKey("r"))
         {
@@ -164,8 +173,9 @@ public class PlayerStats : MonoBehaviour
     public void updatePressure()
     {
         pressureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(pressure, maxPressure));
-        //minPressureNeedle.localPosition = new Vector3(2 * minPressureThreshold / maxPressure * 100 - 100, 0, 0);
-        //maxPressureNeedle.localPosition = new Vector3(2 * maxPressureThreshold / maxPressure * 100 - 100, 0, 0);
+        //maybe put threshold update in a different function using coroutine and properties
+        minPressureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(minPressureThreshold, maxPressure));
+        maxPressureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(maxPressureThreshold, maxPressure));
     }
 
     //updates Radiation UI
@@ -216,9 +226,9 @@ public class PlayerStats : MonoBehaviour
     public void updateTemperature()
     {
         temperatureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(temperature, maxTemperature));
-        //temperatureNeedle.localPosition = new Vector3(2 * temperature / (maxTemperature-minTemperature) * 100 - 100, 0, 0);
-        //minTemperatureNeedle.localPosition = new Vector3(2 * minTemperatureThreshold / (maxTemperature - minTemperature) * 100 - 100, 0, 0);
-        //maxTemperatureNeedle.localPosition = new Vector3(2 * maxTemperatureThreshold / (maxTemperature - minTemperature) * 100 - 100, 0, 0);
+        //maybe put threshold update in a different function using coroutine and properties
+        minTemperatureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(minTemperatureThreshold, maxTemperature));
+        maxTemperatureNeedle.eulerAngles = new Vector3(0, 0, getNeedleRotation(maxTemperatureThreshold, maxTemperature));
     }
 
     public float getNeedleRotation(float value, float maxValue)
