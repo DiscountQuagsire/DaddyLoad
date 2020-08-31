@@ -47,6 +47,15 @@ public class MapGeneratorScript : MonoBehaviour
             fm.writeUnwrittenBlocksToFile();
         }
 
+        if (Input.GetKeyDown("p"))
+        {
+            ps().setThrusters(ps().getThrusterLevel() + 1);
+        }
+
+        if (Input.GetKeyDown("o"))
+        {
+            fm.writeShipUpgradesToFile();
+        }
 
     }
 
@@ -143,6 +152,11 @@ public class MapGeneratorScript : MonoBehaviour
     public void setSeed(int newSeed)
     {
         bm.seed = newSeed;
+    }
+
+    public ProgressionScript ps()
+    {
+        return GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
     }
 }
 public class BiomeManager

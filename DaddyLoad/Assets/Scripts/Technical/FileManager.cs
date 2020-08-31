@@ -146,29 +146,53 @@ public class FileManager : MonoBehaviour
         }
     }
 
-    public void loadPlayerUpgradesFromFile(string name)
+    public void loadShipUpgradesFromFile()
     {
-        // name/drill/hpressure/lpressure/htemp/ltemp/rad/fuel/cargo
-        // 0    1     2         3         4     5     6   7    8
+        string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/shipinfo.txt");
+        this.loadShipUpgradesFromString(input[0]);
+    }
 
-        string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/playerinfo.txt");
-        foreach (string line in input)
-        {
-            string[] segmented = line.Split('/');
-            if (segmented[0] != name) continue;
+    public void loadShipUpgradesFromString(string input)
+    {
+        // thrusters/temp shields/pres shields/bodywork/reactor/comm room/circuitry/windows/flaps
+        // 0    1    2            3            4        5       6         7         8       9
+        string[] segmented = input.Split('/');
+        ProgressionScript ps = GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
 
-            int drill = int.Parse(segmented[1]);
-            int hPressure = int.Parse(segmented[2]);
-            int lPressure = int.Parse(segmented[3]);
-            int hTemp = int.Parse(segmented[4]);
-            int lTemp = int.Parse(segmented[5]);
-            int rad = int.Parse(segmented[6]);
-            int fuel = int.Parse(segmented[7]);
-            int cargo = int.Parse(segmented[8]);
+        ps.setThrusters(int.Parse(segmented[0]));
+        ps.setTempShields(int.Parse(segmented[1]));
+        ps.setPresShields(int.Parse(segmented[2]));
+        ps.setBodywork(int.Parse(segmented[3]));
+        ps.setReactor(int.Parse(segmented[4]));
+        ps.setCommRoom(int.Parse(segmented[5]) == 1 ? true : false);
+        ps.setCircuitry(int.Parse(segmented[6]) == 1 ? true : false);
+        ps.setWindows(int.Parse(segmented[7]) == 1 ? true : false);
+        ps.setFlaps(int.Parse(segmented[8]) == 1 ? true : false);
+    }
 
-            return; // o p t i m i y e d
+    public string getShipUpgradesString()
+    {
+        return File.ReadAllLines(Application.dataPath + "/GameFiles/shipinfo.txt")[0];
+    }
 
-        }
+    public void writeShipUpgradesToFile()
+    {
+        Debug.Log("writing ship upgrades to file");
+        ProgressionScript ps = GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
+        string output = "";
+
+        output += ps.getThrusterLevel()+"/";
+        output += ps.getTemperatureShieldsLevel() + "/";
+        output += ps.getPressureShieldsLevel() + "/";
+        output += ps.getBodyworkLevel() + "/";
+        output += ps.getReactorLevel() + "/";
+
+        output += ps.getCommRoom() ? 1 + "/" : 0 +"/" ;
+        output += ps.getCircuitry() ? 1 + "/" : 0 + "/";
+        output += ps.getWindows() ? 1 + "/" : 0 + "/";
+        output += ps.getFlaps() ? 1 : 0;
+
+        File.WriteAllText(Application.dataPath + "/GameFiles/shipinfo.txt", output);
     }
 
 }

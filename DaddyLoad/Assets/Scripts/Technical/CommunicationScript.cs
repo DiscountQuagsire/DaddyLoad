@@ -49,6 +49,17 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         if (segmented[0] == "mastersaveinv")
             writeDownGlobalInventory();
 
+        if (segmented[0] == "shipinfo")
+            loadShipInfo(message.Replace("shipinfo/", ""));
+
+    }
+
+    private void loadShipInfo(string s)
+    {
+        Debug.Log("LSI fired; input: " + s);
+
+        fm().loadShipUpgradesFromString(s);
+
     }
 
     // locally called metoda ktera updatne 1 material v mgs.globalinventory
@@ -98,12 +109,15 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         // misto newplayer bylo all
         photonView.RPC ("receiveMessage", newPlayer, "setseed/" + mgs().seed);
 
-        string msg = fm().getDestroyedBlockCoordinatesInString();
-        photonView.RPC("receiveMessage", newPlayer, "mapinfo/" + msg);
+        string destroyedBlockCoords = fm().getDestroyedBlockCoordinatesInString();
+        photonView.RPC("receiveMessage", newPlayer, "mapinfo/" + destroyedBlockCoords);
 
         foreach (KeyValuePair<string, int> pair in mgs().globalInventory.materials)
         {
             photonView.RPC("receiveMessage", newPlayer, "materialupdate/" + pair.Key + "/" + pair.Value);
         }
+
+        photonView.RPC("receiveMessage", newPlayer, "shipupgrades" + fm().getShipUpgradesString());
+
     }
 }
