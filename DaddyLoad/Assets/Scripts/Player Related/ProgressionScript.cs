@@ -16,6 +16,47 @@ public class ProgressionScript : MonoBehaviourPunCallbacks
     public bool getWindows() { return windows; }
     public bool getFlaps() { return flaps; }
 
+    public void upgradeThrusters()
+    {
+        this.setThrusters(thrusters + 1);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+    public void upgradeTemperatureShields()
+    {
+        this.setThrusters(tempShields + 1);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+    public void upgradePressureShields()
+    {
+        this.setPresShields(presShields + 1);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+    public void upgradeBodywork()
+    {
+        this.setBodywork(bodywork + 1);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+    public void repairCommRoom()
+    {
+        this.setCommRoom(true);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+    public void repairCircuitry()
+    {
+        this.setCircuitry(true);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+    public void repairWindows()
+    {
+        this.setWindows(true);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+    public void repairFlaps()
+    {
+        this.setFlaps(true);
+        this.sendShipUpgradeInfoToEverybody();
+    }
+
 
     /// 
 

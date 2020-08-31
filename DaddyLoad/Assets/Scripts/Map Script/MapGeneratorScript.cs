@@ -49,8 +49,7 @@ public class MapGeneratorScript : MonoBehaviour
 
         if (Input.GetKeyDown("p"))
         {
-            ps().setThrusters(ps().getThrusterLevel() + 1);
-            ps().sendShipUpgradeInfoToEverybody();
+            ps().upgradeThrusters();
         }
 
         if (Input.GetKeyDown("l"))
