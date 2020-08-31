@@ -31,7 +31,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     [PunRPC]
     public void receiveMessage(string message)
     {
-        //Debug.Log("received message: " + message);
+        Debug.Log("received message: " + message);
         string[] segmented = message.Split('/');
 
         if (segmented[0] == "blockdestroy")
@@ -117,7 +117,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
             photonView.RPC("receiveMessage", newPlayer, "materialupdate/" + pair.Key + "/" + pair.Value);
         }
 
-        photonView.RPC("receiveMessage", newPlayer, "shipinfo" + fm().getShipUpgradesString());
+        photonView.RPC("receiveMessage", newPlayer, "shipinfo/" + fm().getShipUpgradesString());
 
     }
 }
