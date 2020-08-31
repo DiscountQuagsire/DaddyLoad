@@ -57,6 +57,14 @@ public class MapGeneratorScript : MonoBehaviour
             fm.writeShipUpgradesToFile();
         }
 
+        if (Input.GetKeyDown("l"))
+        {
+            ProgressionScript ps = this.ps();
+            Debug.Log("listing all ship upgrades: " + ps.getThrusterLevel() + "/" + ps.getTemperatureShieldsLevel() + "/" 
+                + ps.getPressureShieldsLevel() + "/" + ps.getBodyworkLevel() + "/" + ps.getReactorLevel()
+                + "/" + ps.getCommRoom() + "/" + ps.getCircuitry() + "/" + ps.getWindows() + "/" + ps.getFlaps());
+        }
+
     }
 
     int index = 0;

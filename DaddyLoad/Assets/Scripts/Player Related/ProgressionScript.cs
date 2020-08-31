@@ -40,11 +40,7 @@ public class ProgressionScript : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (Input.GetKeyDown("l"))
-        {
-            Debug.Log("listing all ship upgrades: " + thrusters + "/" + tempShields + "/" + presShields + "/" + bodywork + "/" + reactor
-                + "/" + commRoom + "/" + circuitry + "/" + windows + "/" + flaps);
-        }
+
     }
 
     public void setThrusters(int t)
