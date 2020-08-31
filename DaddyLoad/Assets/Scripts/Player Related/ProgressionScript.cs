@@ -81,4 +81,27 @@ public class ProgressionScript : MonoBehaviourPunCallbacks
         flaps = t;
     }
 
+
+
+    public void sendShipUpgradeInfoToEverybody()
+    {
+        string output = "";
+
+        output += this.getThrusterLevel() + "/";
+        output += this.getTemperatureShieldsLevel() + "/";
+        output += this.getPressureShieldsLevel() + "/";
+        output += this.getBodyworkLevel() + "/";
+        output += this.getReactorLevel() + "/";
+
+        output += this.getCommRoom() ? 1 + "/" : 0 + "/";
+        output += this.getCircuitry() ? 1 + "/" : 0 + "/";
+        output += this.getWindows() ? 1 + "/" : 0 + "/";
+        output += this.getFlaps() ? 1 : 0;
+
+        GameObject.FindGameObjectWithTag("Player").GetComponent<CommunicationScript>().photonView.RPC(
+            "receiveMessage", RpcTarget.All, "shipinfo/" + output);
+    }
+
+
+
 }

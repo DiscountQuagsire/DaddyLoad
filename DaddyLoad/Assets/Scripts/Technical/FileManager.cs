@@ -168,6 +168,11 @@ public class FileManager : MonoBehaviour
         ps.setCircuitry(int.Parse(segmented[6]) == 1 ? true : false);
         ps.setWindows(int.Parse(segmented[7]) == 1 ? true : false);
         ps.setFlaps(int.Parse(segmented[8]) == 1 ? true : false);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            this.writeShipUpgradesToFile();
+        }
     }
 
     public string getShipUpgradesString()
@@ -186,7 +191,7 @@ public class FileManager : MonoBehaviour
         output += ps.getPressureShieldsLevel() + "/";
         output += ps.getBodyworkLevel() + "/";
         output += ps.getReactorLevel() + "/";
-
+         
         output += ps.getCommRoom() ? 1 + "/" : 0 +"/" ;
         output += ps.getCircuitry() ? 1 + "/" : 0 + "/";
         output += ps.getWindows() ? 1 + "/" : 0 + "/";
