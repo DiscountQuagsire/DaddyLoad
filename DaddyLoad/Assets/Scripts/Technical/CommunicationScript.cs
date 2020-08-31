@@ -117,7 +117,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
             photonView.RPC("receiveMessage", newPlayer, "materialupdate/" + pair.Key + "/" + pair.Value);
         }
 
-        photonView.RPC("receiveMessage", newPlayer, "shipupgrades" + fm().getShipUpgradesString());
+        photonView.RPC("receiveMessage", newPlayer, "shipinfo" + fm().getShipUpgradesString());
 
     }
 }
