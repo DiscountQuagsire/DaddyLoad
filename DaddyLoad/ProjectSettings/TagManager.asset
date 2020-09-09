@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Block
   - Control Panel
+  - GUI Removable
   layers:
   - Default
   - TransparentFX

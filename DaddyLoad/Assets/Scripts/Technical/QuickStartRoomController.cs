@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class QuickStartRoomController : MonoBehaviourPunCallbacks
 {
-    [SerializeField]
-    private int multiplayerSceneIndex;
+    private int multiplayerSceneIndex = 1;
     public override void OnEnable()
     {
         PhotonNetwork.AddCallbackTarget(this);

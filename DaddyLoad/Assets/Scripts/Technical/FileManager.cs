@@ -18,7 +18,7 @@ public class FileManager : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             reloadEmptyBlocksFromOwnFiles();
-            mgs.globalInventory.materials = this.getDictionaryFromGlobalInventory();
+            mgs.inventory.materials = this.getDictionaryFromGlobalInventory();
         }
     }
 
@@ -73,46 +73,20 @@ public class FileManager : MonoBehaviour
         return output;
     }
 
-    public void writeDownGlobalInventory()
+    public void writeDownInventory() 
     {
-        
-        foreach (KeyValuePair<string, int> pair in mgs.globalInventory.materials)
+        foreach (KeyValuePair<string, int> pair in mgs.inventory.materials)
         {
             File.AppendAllText(Application.dataPath + "/GameFiles/globalinventory.txt", pair.Key + "/" + pair.Value + "\n");
         }
     }
-
-    public void moveLocalInventoryToGlobalInventory()
-    {
-        Dictionary<string, int> localMaterials = mgs.localInventory.materials;
-        Dictionary<string, int> globalMaterials = mgs.globalInventory.materials;
-
-        File.WriteAllText(Application.dataPath + "/GameFiles/globalinventory.txt", String.Empty);
-
-        foreach (KeyValuePair<string, int> pair in localMaterials)
-        {
-            if (globalMaterials.ContainsKey(pair.Key))
-
-                globalMaterials[pair.Key] = globalMaterials[pair.Key] + pair.Value;
-
-            else
-
-                globalMaterials.Add(pair.Key, pair.Value);
-
-        }
-
-        mgs.globalInventory.materials = globalMaterials;
-        Debug.Log("New global inventory on next line: ");
-        mgs.globalInventory.listInventory();
-        localMaterials.Clear();
-    }
-
-    public void updateGlobalInventoryForEveryone()
+    
+    public void updateInventoryForEveryone()
     {
         CommunicationScript cs = GameObject.FindGameObjectWithTag("Player").GetComponent<CommunicationScript>();
-        Dictionary<string, int> globalMaterials = mgs.globalInventory.materials;
+        Dictionary<string, int> materials = mgs.inventory.materials;
 
-        foreach (KeyValuePair<string, int> pair in globalMaterials)
+        foreach (KeyValuePair<string, int> pair in materials)
         {
             cs.photonView.RPC("receiveMessage", RpcTarget.Others, "materialupdate/" + pair.Key + "/" + pair.Value);
         }

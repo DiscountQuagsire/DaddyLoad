@@ -2,52 +2,72 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class OverviewCanvasScript : MonoBehaviour
 {
-
     public GameObject parentPanel;
-    public Sprite sprite;
-    private GameObject newObj;
+    public TextMeshProUGUI tmp;
+    public GameObject overviewCanvas;
 
     void Start()
     {
-        newObj = new GameObject();
-        Image newImage = newObj.AddComponent<Image>();
-        newImage.sprite = sprite;
-        newObj.GetComponent<RectTransform>().SetParent(parentPanel.transform);
-        newObj.SetActive(true);
+
     }
 
     private void Update()
     {
-        if (Input.GetKey("g"))
+        if (Input.GetKeyDown("e"))
         {
-            newObj.transform.position = new Vector3(900, 500, 0);
-        }
-        if (Input.GetKey("f"))
-        {
+            parentPanel.SetActive(true);
+            Debug.Log("down");
             reloadOverview();
+        }
+        if (Input.GetKeyUp("e"))
+        {
+            parentPanel.SetActive(false);
+            Debug.Log("up");
         }
     }
 
     private void reloadOverview()
     {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("GUI Removable");
+        foreach(GameObject go in objects)
+        {
+            Destroy(go);
+            Debug.Log("destroying go");
+        }
+
+        Debug.Log("reload fired");
         MapGeneratorScript mgs = this.mgs();
-        int yPos = 0;
-        Dictionary<string, int> localMaterials = mgs.localInventory.materials;
-        Dictionary<string, int> globalMaterials = mgs.globalInventory.materials;
+        
+        Dictionary<string, int> materials = mgs.inventory.materials;
+        Vector3 globalLocalOffset = new Vector3(200, 0, 0);
 
+        int yPos = 200;
 
-        newObj = new GameObject();
-        Image newImage = newObj.AddComponent<Image>();
-        Sprite s = (Sprite)Resources.Load("Sprites/Blocks/Diamond", typeof(Sprite));
-        newImage.sprite = s;
-        newObj.GetComponent<RectTransform>().SetParent(parentPanel.transform);
-        newObj.transform.position = new Vector3(500, 500, 0);
-        newObj.SetActive(true);
+        foreach (KeyValuePair<string, int> pair in materials)
+        {
+            GameObject newObj = new GameObject();
+            Image newImage = newObj.AddComponent<Image>();
+            string str = pair.Key;
+            string name = char.ToUpper(str[0]) + str.Substring(1);
+            Sprite s = (Sprite)Resources.Load("Sprites/Blocks/" + name, typeof(Sprite));
+            newImage.sprite = s;
+            newObj.GetComponent<RectTransform>().SetParent(parentPanel.transform);
+            newObj.transform.position = new Vector3(500, yPos, 0);
+            newObj.tag = "GUI Removable";
+            newObj.SetActive(true);
+            newObj.name = "Inventory icon: " + name;
+            newObj.transform.localScale = new Vector3(0.5f, 0.5f, 0);
 
-
+            TextMeshProUGUI TMPObject = Instantiate(tmp);
+            TMPObject.transform.SetParent(newObj.transform);
+            TMPObject.transform.Translate(newObj.transform.position + new Vector3(-50, -15, 0));
+            TMPObject.SetText(pair.Value + "");
+            yPos += 45;
+        }
     }
 
     private MapGeneratorScript mgs()

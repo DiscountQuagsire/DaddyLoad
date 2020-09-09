@@ -44,10 +44,10 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
             receiveMapInfo(segmented[1]);
 
         if (segmented[0] == "materialupdate")
-            updateGlobalInventoryMaterial(segmented[1], int.Parse(segmented[2]));
+            updateInventoryMaterial(segmented[1], int.Parse(segmented[2]));
 
         if (segmented[0] == "mastersaveinv")
-            writeDownGlobalInventory();
+            writeDownInventory();
 
         if (segmented[0] == "shipinfo")
             loadShipInfo(message.Replace("shipinfo/", ""));
@@ -63,9 +63,9 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     }
 
     // locally called metoda ktera updatne 1 material v mgs.globalinventory
-    private void updateGlobalInventoryMaterial(string material, int amount)
+    private void updateInventoryMaterial(string material, int amount)
     {
-        mgs().globalInventory.materials[material] = amount;
+        mgs().inventory.materials[material] = amount;
     }
 
     // locally called metoda ktera removne block; pokud jsi master tak ho i logne
@@ -92,10 +92,10 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
        
     }
 
-    private void writeDownGlobalInventory()
+    private void writeDownInventory()
     {
         if (PhotonNetwork.IsMasterClient)
-            fm().writeDownGlobalInventory();
+            fm().writeDownInventory();
 
     }
 
@@ -112,7 +112,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         string destroyedBlockCoords = fm().getDestroyedBlockCoordinatesInString();
         photonView.RPC("receiveMessage", newPlayer, "mapinfo/" + destroyedBlockCoords);
 
-        foreach (KeyValuePair<string, int> pair in mgs().globalInventory.materials)
+        foreach (KeyValuePair<string, int> pair in mgs().inventory.materials)
         {
             photonView.RPC("receiveMessage", newPlayer, "materialupdate/" + pair.Key + "/" + pair.Value);
         }

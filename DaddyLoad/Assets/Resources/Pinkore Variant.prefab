@@ -21,7 +21,7 @@ PrefabInstance:
     - target: {fileID: 1849677089267487887, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
       propertyPath: m_Name
-      value: Pink Ore Variant
+      value: Pinkore Variant
       objectReference: {fileID: 0}
     - target: {fileID: 2890721784810565173, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
@@ -86,7 +86,7 @@ PrefabInstance:
     - target: {fileID: 6388018556155893287, guid: 4d3d6dfea27e67f40affe45f3903bbe0,
         type: 3}
       propertyPath: resourceName
-      value: pink
+      value: pinkore
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d3d6dfea27e67f40affe45f3903bbe0, type: 3}

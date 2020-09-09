@@ -17,8 +17,7 @@ public class MapGeneratorScript : MonoBehaviour
     public ArrayList loadedChunkCoordinates = new ArrayList();
     FileManager fm;
     public BiomeManager bm;
-    public Inventory localInventory = new Inventory();
-    public Inventory globalInventory = new Inventory();
+    public Inventory inventory = new Inventory();
 
     public void Start()
     {
@@ -31,15 +30,13 @@ public class MapGeneratorScript : MonoBehaviour
     {
         if (Input.GetKeyDown("i"))
         {
-            localInventory.listInventory();
-            globalInventory.listInventory();
+            inventory.listInventory();
         }
 
         if (Input.GetKeyDown("h"))
         {
-            Debug.Log("Local to global; updating for everyone");
-            fm.moveLocalInventoryToGlobalInventory();
-            fm.updateGlobalInventoryForEveryone();
+            Debug.Log("Updating for everyone");
+            fm.updateInventoryForEveryone();
         }
 
         if (Input.GetKeyDown("k"))
