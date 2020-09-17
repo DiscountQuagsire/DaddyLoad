@@ -75,7 +75,7 @@ public class ProgressionScript : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            GameObject.Find("FileManager").GetComponent<FileManager>().loadShipUpgradesFromFile();
+            FileManager.loadShipUpgradesFromFile();
         }
     }
 

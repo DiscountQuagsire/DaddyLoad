@@ -7,6 +7,7 @@ TagManager:
   - Block
   - Control Panel
   - GUI Removable
+  - Base
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - 
   - Block
   - Background
-  - 
+  - Base
   - 
   - 
   - 
@@ -43,4 +44,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Foreground
+    uniqueID: 2527490839
+    locked: 0
+  - name: New Layer1
+    uniqueID: 2537194569
+    locked: 0
+  - name: New Layer2
+    uniqueID: 4120196793
+    locked: 0
+  - name: New Layer3
+    uniqueID: 246908493
+    locked: 0
+  - name: Always top
+    uniqueID: 1311955921
     locked: 0

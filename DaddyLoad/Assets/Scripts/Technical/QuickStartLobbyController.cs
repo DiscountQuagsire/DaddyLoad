@@ -27,7 +27,7 @@ public class QuickStartLobbyController : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("failed to join room; creating");
+        //Debug.Log("failed to join room; creating");
         CreateRoom();
     }
 

@@ -15,33 +15,33 @@ public class MapGeneratorScript : MonoBehaviour
     public int sightHalfHeight = 12;
 
     public ArrayList loadedChunkCoordinates = new ArrayList();
-    FileManager fm;
     public BiomeManager bm;
     public Inventory inventory = new Inventory();
 
     public void Start()
     {
-        fm = GameObject.Find("FileManager").GetComponent<FileManager>();
-        bm = new BiomeManager(fm);
+        Debug.Log("MGS Start");
+        bm = new BiomeManager();
         bm.setSeed(seed);
+        FileManager.Start();
     }
 
     public void Update()
     {
         if (Input.GetKeyDown("i"))
         {
-            inventory.listInventory();
+            
         }
 
         if (Input.GetKeyDown("h"))
         {
             Debug.Log("Updating for everyone");
-            fm.updateInventoryForEveryone();
+            FileManager.updateInventoryForEveryone();
         }
 
         if (Input.GetKeyDown("k"))
         {
-            fm.writeUnwrittenBlocksToFile();
+            FileManager.writeUnwrittenBlocksToFile();
         }
 
         if (Input.GetKeyDown("p"))
@@ -167,18 +167,15 @@ public class BiomeManager
     public Hash h;
     public int seed;
     public int chunkSize = 10;
-    public FileManager fm;
 
-    public BiomeManager(FileManager fm)
+    public BiomeManager()
     {
         h = new Hash();
 
         //h.setNewHash(589, 154, 12345);
 
-
-        this.fm = fm;
-        desert = new Desert(this, fm);
-        realBase = new Base(this, fm);
+        desert = new Desert(this);
+        realBase = new Base(this);
     }
 
     public Biome getBiomeAt(int x)
@@ -229,13 +226,12 @@ public abstract class Biome
     public GameObject background1;
 
     public BiomeManager bm;
-    public FileManager fm;
 
-    public Biome(BiomeManager bm, FileManager fm)
+
+    public Biome(BiomeManager bm)
     {
 
         this.bm = bm;
-        this.fm = fm;
 
         dirt =      (GameObject)Resources.Load("Dirt Variant",      typeof(GameObject));
         stone =     (GameObject)Resources.Load("Stone Variant",     typeof(GameObject));
@@ -278,7 +274,7 @@ public class Desert : Biome
 
     public Dictionary<GameObject, int> count = new Dictionary<GameObject, int>();
 
-    public Desert(BiomeManager bm, FileManager fm) :  base(bm, fm) { }
+    public Desert(BiomeManager bm) :  base(bm) { }
 
     public override GameObject getBlockAt(int x, int y)
     {
@@ -318,7 +314,7 @@ public class Desert : Biome
 
             if (y > 0) continue;
 
-            if (fm.isDestroyed(x, y))
+            if (FileManager.isDestroyed(x, y))
             {
                 GameObject.Instantiate(background1, new Vector3(x, y, 0), Quaternion.identity);
                 continue;
@@ -344,7 +340,7 @@ public class Desert : Biome
 public class Base : Biome
 {
 
-    public Base(BiomeManager bm, FileManager fm) : base(bm, fm){}
+    public Base(BiomeManager bm) : base(bm){}
 
     public override GameObject getBlockAt(int x, int y)
     {
@@ -370,7 +366,7 @@ public class Base : Biome
 
             if (y > 0) continue;
 
-                if (fm.isDestroyed(x, y))
+                if (FileManager.isDestroyed(x, y))
                 {
                     GameObject.Instantiate(background1, new Vector3(x, y, 0), Quaternion.identity);
                     continue;

@@ -16,16 +16,12 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     {
         //fm = GameObject.Find("FileManager").GetComponent<FileManager>();
         //mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
+        FileManager.getShipUpgradesString();
     }
 
     public MapGeneratorScript mgs()
     {
         return GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
-    }
-
-    public FileManager fm()
-    {
-        return GameObject.Find("FileManager").GetComponent<FileManager>();
     }
 
     [PunRPC]
@@ -58,7 +54,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     {
         Debug.Log("LSI fired; input: " + s);
 
-        fm().loadShipUpgradesFromString(s);
+        FileManager.loadShipUpgradesFromString(s);
 
     }
 
@@ -73,7 +69,8 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            fm().writeBlockDestroy(x, y);
+            FileManager.destroyedBlockCoords.Add(new Coordinate(x, y));
+            FileManager.unwrittenBlockCoords.Add(new Coordinate(x, y));
         }
         mgs().removeBlockAt(x, y);
     }
@@ -88,14 +85,14 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     private void receiveMapInfo(string mapInfo)
     {
         Debug.Log("receiving map info: " + mapInfo);
-        fm().loadDestroyedBlockCoordinatesFromString(mapInfo);
+        FileManager.loadDestroyedBlockCoordinatesFromString(mapInfo);
        
     }
 
     private void writeDownInventory()
     {
         if (PhotonNetwork.IsMasterClient)
-            fm().writeDownInventory();
+            FileManager.writeDownInventory();
 
     }
 
@@ -109,7 +106,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         // misto newplayer bylo all
         photonView.RPC ("receiveMessage", newPlayer, "setseed/" + mgs().seed);
 
-        string destroyedBlockCoords = fm().getDestroyedBlockCoordinatesInString();
+        string destroyedBlockCoords = FileManager.getDestroyedBlockCoordinatesInString();
         photonView.RPC("receiveMessage", newPlayer, "mapinfo/" + destroyedBlockCoords);
 
         foreach (KeyValuePair<string, int> pair in mgs().inventory.materials)
@@ -117,7 +114,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
             photonView.RPC("receiveMessage", newPlayer, "materialupdate/" + pair.Key + "/" + pair.Value);
         }
 
-        photonView.RPC("receiveMessage", newPlayer, "shipinfo/" + fm().getShipUpgradesString());
+        photonView.RPC("receiveMessage", newPlayer, "shipinfo/" + FileManager.getShipUpgradesString());
 
     }
 }

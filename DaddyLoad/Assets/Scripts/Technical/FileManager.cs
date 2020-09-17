@@ -6,43 +6,27 @@ using System.Runtime;
 using Photon.Pun;
 using System;
 
-public class FileManager : MonoBehaviour
+public class FileManager
 {
-    public ArrayList destroyedBlockCoords = new ArrayList();
-    public ArrayList unwrittenBlockCoords = new ArrayList();
-    public MapGeneratorScript mgs;
+    public static ArrayList destroyedBlockCoords = new ArrayList();
+    public static ArrayList unwrittenBlockCoords = new ArrayList();
+    public static MapGeneratorScript mgs;
+    public static BaseScript bs;
 
-    public void Start()
+    public static void Start()
     {
+        Debug.Log("FM Start");
         mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
+        bs = GameObject.Find("BaseManager").GetComponent<BaseScript>();
+        Debug.Log("basescript: " + bs);
         if (PhotonNetwork.IsMasterClient)
         {
             reloadEmptyBlocksFromOwnFiles();
-            mgs.inventory.materials = this.getDictionaryFromGlobalInventory();
+            mgs.inventory.materials = getDictionaryFromGlobalInventory();
         }
     }
-
-
-
-    public void writeBlockDestroy(int x, int y)
-    {
-        //File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", x + ", " + y + "\n");
-        destroyedBlockCoords.Add(new Coordinate(x, y));
-        unwrittenBlockCoords.Add(new Coordinate(x, y));
-        //Debug.Log("writing block destroy at: " + x + ", " + y);
-    }
-
-    public void writeUnwrittenBlocksToFile()
-    {
-        Debug.Log("Saving map");
-        foreach (Coordinate c in unwrittenBlockCoords)
-        {
-            File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", c.x + ", " + c.y + "\n");
-        }
-        unwrittenBlockCoords.Clear();
-    }
-
-    public void reloadEmptyBlocksFromOwnFiles()
+    
+    public static void reloadEmptyBlocksFromOwnFiles()
     {
         destroyedBlockCoords.Clear();
         string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/blocks.txt");
@@ -53,7 +37,7 @@ public class FileManager : MonoBehaviour
         }
     }
 
-    public bool isDestroyed(int x, int y)
+    public static bool isDestroyed(int x, int y)
     {
         foreach(Coordinate c in destroyedBlockCoords)
         {
@@ -62,7 +46,7 @@ public class FileManager : MonoBehaviour
         return false;
     }
 
-    public string getDestroyedBlockCoordinatesInString()
+    public static string getDestroyedBlockCoordinatesInString()
     {
         string output = "";
         foreach (Coordinate c in destroyedBlockCoords)
@@ -73,15 +57,8 @@ public class FileManager : MonoBehaviour
         return output;
     }
 
-    public void writeDownInventory() 
-    {
-        foreach (KeyValuePair<string, int> pair in mgs.inventory.materials)
-        {
-            File.AppendAllText(Application.dataPath + "/GameFiles/globalinventory.txt", pair.Key + "/" + pair.Value + "\n");
-        }
-    }
-    
-    public void updateInventoryForEveryone()
+
+    public static void updateInventoryForEveryone()
     {
         CommunicationScript cs = GameObject.FindGameObjectWithTag("Player").GetComponent<CommunicationScript>();
         Dictionary<string, int> materials = mgs.inventory.materials;
@@ -93,7 +70,7 @@ public class FileManager : MonoBehaviour
         cs.photonView.RPC("receiveMessage", RpcTarget.All, "mastersaveinv");
     }
 
-    public Dictionary<string, int> getDictionaryFromGlobalInventory()
+    public static Dictionary<string, int> getDictionaryFromGlobalInventory()
     {
         string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/globalinventory.txt");
         Dictionary<string, int> globalInventory = new Dictionary<string, int>();
@@ -102,13 +79,12 @@ public class FileManager : MonoBehaviour
         {
             string[] segmented = line.Split('/');
             globalInventory.Add(segmented[0], int.Parse(segmented[1]));
-
         }
 
         return globalInventory;
     }
 
-    public void loadDestroyedBlockCoordinatesFromString(string input)
+    public static void loadDestroyedBlockCoordinatesFromString(string input)
     {
         string[] lines = input.Split('*');
 
@@ -120,13 +96,13 @@ public class FileManager : MonoBehaviour
         }
     }
 
-    public void loadShipUpgradesFromFile()
+    public static void loadShipUpgradesFromFile()
     {
         string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/shipinfo.txt");
-        this.loadShipUpgradesFromString(input[0]);
+        loadShipUpgradesFromString(input[0]);
     }
 
-    public void loadShipUpgradesFromString(string input)
+    public static void loadShipUpgradesFromString(string input)
     {
         // thrusters/temp shields/pres shields/bodywork/reactor/comm room/circuitry/windows/flaps
         // 0    1    2            3            4        5       6         7         8       9
@@ -143,20 +119,53 @@ public class FileManager : MonoBehaviour
         ps.setWindows(int.Parse(segmented[7]) == 1 ? true : false);
         ps.setFlaps(int.Parse(segmented[8]) == 1 ? true : false);
 
-        if (PhotonNetwork.IsMasterClient)
+        /*if (PhotonNetwork.IsMasterClient)  no fucking clue proc tady bylo tohle?
         {
             this.writeShipUpgradesToFile();
-        }
+        }*/
     }
 
-    public string getShipUpgradesString()
+    public static string getShipUpgradesString()
     {
         return File.ReadAllLines(Application.dataPath + "/GameFiles/shipinfo.txt")[0];
     }
 
-    public void writeShipUpgradesToFile()
+    public static ArrayList getBasesFromFile()
     {
-        Debug.Log("writing ship upgrades to file");
+        ArrayList list = new ArrayList();
+        Debug.Log("load bases from file fired");
+        string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/bases.txt");
+
+        foreach (string thisLine in input)
+        {
+            list.Add(float.Parse(thisLine));
+        }
+
+        return list;
+    }
+
+    public static void writeDownInventory() //tohle urcite
+    {
+        Debug.Log("Writing inventory to file");
+        File.WriteAllText(Application.dataPath + "/GameFiles/globalinventory.txt", "");
+        foreach (KeyValuePair<string, int> pair in mgs.inventory.materials)
+        {
+            File.AppendAllText(Application.dataPath + "/GameFiles/globalinventory.txt", pair.Key + "/" + pair.Value + "\n");
+        }
+    }
+    public static void writeUnwrittenBlocksToFile() // tohle urcite
+    {
+        Debug.Log("Writing newly destroyed blocks to file");
+        foreach (Coordinate c in unwrittenBlockCoords)
+        {
+            File.AppendAllText(Application.dataPath + "/GameFiles/blocks.txt", c.x + ", " + c.y + "\n");
+        }
+        unwrittenBlockCoords.Clear();
+    }
+
+    public static void writeShipUpgradesToFile() //tohle urcite
+    {
+        Debug.Log("Writing ship upgrades to file");
         ProgressionScript ps = GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
         string output = "";
 
@@ -172,6 +181,16 @@ public class FileManager : MonoBehaviour
         output += ps.getFlaps() ? 1 : 0;
 
         File.WriteAllText(Application.dataPath + "/GameFiles/shipinfo.txt", output);
+    }
+
+    public static void writeBasesToFile()
+    {
+        Debug.Log("Writing bases to file");
+        File.WriteAllText(Application.dataPath + "/GameFiles/bases.txt", "");
+        foreach(float xPos in bs.baseCoordinates)
+        {
+            File.AppendAllText(Application.dataPath + "/GameFiles/bases.txt", xPos + "\n");
+        }
     }
 
 }
