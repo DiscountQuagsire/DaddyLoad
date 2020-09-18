@@ -147,11 +147,6 @@ public class MapGeneratorScript
         }
     }
 
-    public static void setSeed(int newSeed)
-    {
-        seed = newSeed;
-    }
-
     public static ProgressionScript ps()
     {
         return GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
@@ -164,7 +159,6 @@ public class BiomeManager
     public static Desert desert = new Desert();
     public static Base realBase = new Base(); 
     public static Hash h = new Hash();
-    public static int seed;
     public static int chunkSize = 10;
 
     public static Biome getBiomeAt(int x)
@@ -173,11 +167,6 @@ public class BiomeManager
             return realBase;
         else
             return desert;
-    }
-
-    public static void setSeed(int newSeed)
-    {
-        seed = newSeed;
     }
 
 }
@@ -271,7 +260,7 @@ public class Desert : Biome
 
         if (y < 3) return sand;
 
-        h.setNewHash(x, y, BiomeManager.seed);
+        h.setNewHash(x, y, MapGeneratorScript.seed);
 
         if (y == 3 && (h.v % 2 == 0 || h.v % 3 == 0)) return sand;
 
@@ -335,7 +324,7 @@ public class Base : Biome
     {
         y = -y;
         
-        h.setNewHash(x, y, BiomeManager.seed);
+        h.setNewHash(x, y, MapGeneratorScript.seed);
 
         if (y == 0) return grass;
         if (y < 3) return dirt;

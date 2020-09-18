@@ -76,7 +76,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     private void receiveSeedUpdate(int newSeed)
     {
         Debug.Log("Setting seed to: " + newSeed);
-        MapGeneratorScript.setSeed(newSeed); 
+        MapGeneratorScript.seed = newSeed; 
     }
 
     private void receiveMapInfo(string mapInfo)
