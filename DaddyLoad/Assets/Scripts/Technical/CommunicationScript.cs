@@ -69,7 +69,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
             FileManager.unwrittenBlockCoords.Add(new Coordinate(x, y));
         }
         MapGeneratorScript.removeBlockAt(x, y);
-        MapGeneratorScript.bm.desert.addBackground(x, y);
+        BiomeManager.desert.addBackground(x, y); // jakejkoli biome by fungoval
     }
 
     // locally called; updatne seed

@@ -15,14 +15,12 @@ public class MapGeneratorScript
     public static int sightHalfHeight = 12;
 
     public static ArrayList loadedChunkCoordinates = new ArrayList();
-    public static BiomeManager bm;
     public static Inventory inventory = new Inventory();
 
     public static void Start()
     {
         Debug.Log("MGS Start");
-        bm = new BiomeManager();
-        bm.setSeed(seed);
+
         FileManager.Start();
     }
 
@@ -103,7 +101,7 @@ public class MapGeneratorScript
             { 
                 if (c.isInArray(loadedChunkCoordinates)) continue;
                 loadedChunkCoordinates.Add(c);
-                bm.getBiomeAt(possibleX).actuallyGenerateChunk(c);
+                BiomeManager.getBiomeAt(possibleX).actuallyGenerateChunk(c);
                 return;
             }
 
@@ -151,7 +149,7 @@ public class MapGeneratorScript
 
     public static void setSeed(int newSeed)
     {
-        bm.seed = newSeed;
+        seed = newSeed;
     }
 
     public static ProgressionScript ps()
@@ -163,23 +161,13 @@ public class MapGeneratorScript
 public class BiomeManager
 {
 
-    public Desert desert;
-    public Base realBase; // base je keyword takze to nemuzu pouzit lmao
-    public Hash h;
-    public int seed;
-    public int chunkSize = 10;
+    public static Desert desert = new Desert();
+    public static Base realBase = new Base(); 
+    public static Hash h = new Hash();
+    public static int seed;
+    public static int chunkSize = 10;
 
-    public BiomeManager()
-    {
-        h = new Hash();
-
-        //h.setNewHash(589, 154, 12345);
-
-        desert = new Desert(this);
-        realBase = new Base(this);
-    }
-
-    public Biome getBiomeAt(int x)
+    public static Biome getBiomeAt(int x)
     {
         if (x >= 0 && x < 20)
             return realBase;
@@ -187,7 +175,7 @@ public class BiomeManager
             return desert;
     }
 
-    public void setSeed(int newSeed)
+    public static void setSeed(int newSeed)
     {
         seed = newSeed;
     }
@@ -219,20 +207,17 @@ public abstract class Biome
     public GameObject magma;
     public GameObject pinkore;
     
-
-
     public GameObject GameObject;
 
     public GameObject error;
     public GameObject background1;
 
-    public BiomeManager bm;
+    public Hash h;
 
 
-    public Biome(BiomeManager bm)
+    public Biome()
     {
-
-        this.bm = bm;
+        h = new Hash();
 
         dirt =      (GameObject)Resources.Load("Dirt Variant",      typeof(GameObject));
         stone =     (GameObject)Resources.Load("Stone Variant",     typeof(GameObject));
@@ -277,9 +262,8 @@ public abstract class Biome
 public class Desert : Biome
 {
 
-    public Dictionary<GameObject, int> count = new Dictionary<GameObject, int>();
 
-    public Desert(BiomeManager bm) :  base(bm) { }
+    public Desert() :  base() { }
 
     public override GameObject getBlockAt(int x, int y)
     {
@@ -287,24 +271,24 @@ public class Desert : Biome
 
         if (y < 3) return sand;
 
-        bm.h.setNewHash(x, y, bm.seed);
+        h.setNewHash(x, y, BiomeManager.seed);
 
-        if (y == 3 && (bm.h.v % 2 == 0 || bm.h.v % 3 == 0)) return sand;
+        if (y == 3 && (h.v % 2 == 0 || h.v % 3 == 0)) return sand;
 
 
 
-        else if (y >= 450 && y < 500 && bm.h.v >= 0 && bm.h.v < 1000) return diamond;
-        else if (y >= 400 && y < 500 && bm.h.v >= 1000 && bm.h.v < 2000) return titanium;
-        else if (y >= 350 && y < 500 && bm.h.v >= 2000 && bm.h.v < 3000) return iridium;
-        else if (y >= 300 && y < 500 && bm.h.v >= 3000 && bm.h.v < 4000) return platinum;
-        else if (y >= 250 && y < 500 && bm.h.v >= 4000 && bm.h.v < 5000) return copper;
-        else if (y >= 150 && y < 350 && bm.h.v >= 5000 && bm.h.v < 6500) return gold;
-        else if (y >= 150 && y < 180 && bm.h.v >= 6500 && bm.h.v < 8000) return lead;
-        else if (y >= 100 && y < 300 && bm.h.v >= 8000 && bm.h.v < 9500) return silver;
-        else if (y >= 50 && y < 150 && bm.h.v >= 9500 && bm.h.v < 11000) return iron;
-        else if (y >= 40 && y < 150 && bm.h.v >= 11000 && bm.h.v < 12500) return aluminum;
-        else if (y >= 10 && y < 120 && bm.h.v >= 12500 && bm.h.v < 15000) return plastic;
-        else if (y >= 10 && y < 120 && bm.h.v >= 15000 && bm.h.v < 17500) return bronze;
+        else if (y >= 450 && y < 500 && h.v >= 0 && h.v < 1000) return diamond;
+        else if (y >= 400 && y < 500 && h.v >= 1000 && h.v < 2000) return titanium;
+        else if (y >= 350 && y < 500 && h.v >= 2000 && h.v < 3000) return iridium;
+        else if (y >= 300 && y < 500 && h.v >= 3000 && h.v < 4000) return platinum;
+        else if (y >= 250 && y < 500 && h.v >= 4000 && h.v < 5000) return copper;
+        else if (y >= 150 && y < 350 && h.v >= 5000 && h.v < 6500) return gold;
+        else if (y >= 150 && y < 180 && h.v >= 6500 && h.v < 8000) return lead;
+        else if (y >= 100 && y < 300 && h.v >= 8000 && h.v < 9500) return silver;
+        else if (y >= 50 && y < 150 && h.v >= 9500 && h.v < 11000) return iron;
+        else if (y >= 40 && y < 150 && h.v >= 11000 && h.v < 12500) return aluminum;
+        else if (y >= 10 && y < 120 && h.v >= 12500 && h.v < 15000) return plastic;
+        else if (y >= 10 && y < 120 && h.v >= 15000 && h.v < 17500) return bronze;
 
         return sandstone;
     }
@@ -313,8 +297,8 @@ public class Desert : Biome
     {
         //DateTime before = System.DateTime.Now;
 
-        for (int x = c.x; x < c.x + bm.chunkSize; x++)
-        for (int y = c.y; y > c.y - bm.chunkSize; y--)
+        for (int x = c.x; x < c.x + BiomeManager.chunkSize; x++)
+        for (int y = c.y; y > c.y - BiomeManager.chunkSize; y--)
         {
 
             if (y > 0) continue;
@@ -345,19 +329,19 @@ public class Desert : Biome
 public class Base : Biome
 {
 
-    public Base(BiomeManager bm) : base(bm){}
+    public Base() : base(){}
 
     public override GameObject getBlockAt(int x, int y)
     {
         y = -y;
         
-        bm.h.setNewHash(x, y, bm.seed);
+        h.setNewHash(x, y, BiomeManager.seed);
 
         if (y == 0) return grass;
         if (y < 3) return dirt;
-        else if (y == 3 && (bm.h.v % 2 == 0 || bm.h.v % 3 == 0)) return dirt;
-        else if ((y == 4 || y == 5) && bm.h.v % 2 == 0) return dirt;
-        else if (bm.h.v < 10000) return gold;
+        else if (y == 3 && (h.v % 2 == 0 || h.v % 3 == 0)) return dirt;
+        else if ((y == 4 || y == 5) && h.v % 2 == 0) return dirt;
+        else if (h.v < 10000) return gold;
         else return stone;
     }
 
@@ -365,8 +349,8 @@ public class Base : Biome
     {
         //DateTime before = System.DateTime.Now;
 
-        for (int x = c.x; x < c.x + bm.chunkSize; x++)
-        for (int y = c.y; y > c.y - bm.chunkSize; y--)
+        for (int x = c.x; x < c.x + BiomeManager.chunkSize; x++)
+        for (int y = c.y; y > c.y - BiomeManager.chunkSize; y--)
         {
 
             if (y > 0) continue;
