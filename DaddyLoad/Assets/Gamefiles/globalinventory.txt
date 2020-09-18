@@ -1,4 +1,4 @@
-gold/23
+gold/25
 bronze/3
 plastic/2
 iron/9

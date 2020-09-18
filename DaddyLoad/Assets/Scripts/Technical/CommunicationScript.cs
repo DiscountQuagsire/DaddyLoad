@@ -64,15 +64,17 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         mgs().inventory.materials[material] = amount;
     }
 
-    // locally called metoda ktera removne block; pokud jsi master tak ho i logne
+    // locally called metoda ktera removne block
     private void receiveBlockDestroyInfo(string resourceName, int x, int y) 
     {
+        FileManager.destroyedBlockCoords.Add(new Coordinate(x, y));
+
         if (PhotonNetwork.IsMasterClient)
         {
-            FileManager.destroyedBlockCoords.Add(new Coordinate(x, y));
             FileManager.unwrittenBlockCoords.Add(new Coordinate(x, y));
         }
         mgs().removeBlockAt(x, y);
+        mgs().bm.desert.addBackground(x, y);
     }
 
     // locally called; updatne seed

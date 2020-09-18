@@ -158,6 +158,7 @@ public class MapGeneratorScript : MonoBehaviour
     {
         return GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
     }
+
 }
 public class BiomeManager
 {
@@ -267,6 +268,10 @@ public abstract class Biome
 
     public abstract float getTemperature(float depth);
     public abstract float getPressure(float depth);
+    public void addBackground(int x, int y)
+    {
+        GameObject.Instantiate(background1, new Vector3(x, y, 0), Quaternion.identity);
+    }
 }
 
 public class Desert : Biome
@@ -316,7 +321,7 @@ public class Desert : Biome
 
             if (FileManager.isDestroyed(x, y))
             {
-                GameObject.Instantiate(background1, new Vector3(x, y, 0), Quaternion.identity);
+                addBackground(x, y);
                 continue;
             }
 
@@ -368,7 +373,7 @@ public class Base : Biome
 
                 if (FileManager.isDestroyed(x, y))
                 {
-                    GameObject.Instantiate(background1, new Vector3(x, y, 0), Quaternion.identity);
+                    addBackground(x, y); 
                     continue;
                 }
 
