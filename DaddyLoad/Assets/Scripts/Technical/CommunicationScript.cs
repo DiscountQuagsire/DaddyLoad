@@ -19,11 +19,6 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         FileManager.getShipUpgradesString();
     }
 
-    public MapGeneratorScript mgs()
-    {
-        return GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
-    }
-
     [PunRPC]
     public void receiveMessage(string message)
     {
@@ -61,7 +56,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     // locally called metoda ktera updatne 1 material v mgs.globalinventory
     private void updateInventoryMaterial(string material, int amount)
     {
-        mgs().inventory.materials[material] = amount;
+        MapGeneratorScript.inventory.materials[material] = amount;
     }
 
     // locally called metoda ktera removne block
@@ -73,15 +68,15 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         {
             FileManager.unwrittenBlockCoords.Add(new Coordinate(x, y));
         }
-        mgs().removeBlockAt(x, y);
-        mgs().bm.desert.addBackground(x, y);
+        MapGeneratorScript.removeBlockAt(x, y);
+        MapGeneratorScript.bm.desert.addBackground(x, y);
     }
 
     // locally called; updatne seed
     private void receiveSeedUpdate(int newSeed)
     {
         Debug.Log("Setting seed to: " + newSeed);
-        mgs().setSeed(newSeed); 
+        MapGeneratorScript.setSeed(newSeed); 
     }
 
     private void receiveMapInfo(string mapInfo)
@@ -106,12 +101,12 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient) return;
 
         // misto newplayer bylo all
-        photonView.RPC ("receiveMessage", newPlayer, "setseed/" + mgs().seed);
+        photonView.RPC ("receiveMessage", newPlayer, "setseed/" + MapGeneratorScript.seed);
 
         string destroyedBlockCoords = FileManager.getDestroyedBlockCoordinatesInString();
         photonView.RPC("receiveMessage", newPlayer, "mapinfo/" + destroyedBlockCoords);
 
-        foreach (KeyValuePair<string, int> pair in mgs().inventory.materials)
+        foreach (KeyValuePair<string, int> pair in MapGeneratorScript.inventory.materials)
         {
             photonView.RPC("receiveMessage", newPlayer, "materialupdate/" + pair.Key + "/" + pair.Value);
         }

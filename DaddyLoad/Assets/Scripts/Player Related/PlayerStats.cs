@@ -117,8 +117,8 @@ public class PlayerStats : MonoBehaviour
 
         //Temperature setting
 
-        setTemperature(GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().bm.getBiomeAt((int)GameObject.FindGameObjectWithTag("Player").transform.position.x).getTemperature((int)GameObject.FindGameObjectWithTag("Player").transform.position.y));
-        setPressure(GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>().bm.getBiomeAt((int)GameObject.FindGameObjectWithTag("Player").transform.position.x).getPressure((int)GameObject.FindGameObjectWithTag("Player").transform.position.y));
+        setTemperature(MapGeneratorScript.bm.getBiomeAt((int)GameObject.FindGameObjectWithTag("Player").transform.position.x).getTemperature((int)GameObject.FindGameObjectWithTag("Player").transform.position.y));
+        setPressure(MapGeneratorScript.bm.getBiomeAt((int)GameObject.FindGameObjectWithTag("Player").transform.position.x).getPressure((int)GameObject.FindGameObjectWithTag("Player").transform.position.y));
 
     }
 

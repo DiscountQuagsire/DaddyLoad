@@ -40,9 +40,8 @@ public class OverviewCanvasScript : MonoBehaviour
         }
 
         Debug.Log("reload fired");
-        MapGeneratorScript mgs = this.mgs();
         
-        Dictionary<string, int> materials = mgs.inventory.materials;
+        Dictionary<string, int> materials = MapGeneratorScript.inventory.materials;
         Vector3 globalLocalOffset = new Vector3(200, 0, 0);
 
         int yPos = 200;
@@ -69,11 +68,5 @@ public class OverviewCanvasScript : MonoBehaviour
             yPos += 45;
         }
     }
-
-    private MapGeneratorScript mgs()
-    {
-        return GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
-    }
-
 
 }

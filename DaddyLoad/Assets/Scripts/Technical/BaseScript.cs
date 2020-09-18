@@ -16,6 +16,7 @@ public class BaseScript: MonoBehaviourPunCallbacks
 
     void Start()
     {
+        MapGeneratorScript.Start();
         Debug.Log("BS Start");
         if (PhotonNetwork.IsMasterClient)
         {
@@ -77,6 +78,7 @@ public class BaseScript: MonoBehaviourPunCallbacks
     int index = 0;
     void FixedUpdate()
     {
+        MapGeneratorScript.FixedUpdate();
         if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");

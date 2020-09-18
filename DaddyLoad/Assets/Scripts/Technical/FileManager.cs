@@ -10,19 +10,17 @@ public class FileManager
 {
     public static ArrayList destroyedBlockCoords = new ArrayList();
     public static ArrayList unwrittenBlockCoords = new ArrayList();
-    public static MapGeneratorScript mgs;
     public static BaseScript bs;
 
     public static void Start()
     {
         Debug.Log("FM Start");
-        mgs = GameObject.Find("MapGenerator").GetComponent<MapGeneratorScript>();
         bs = GameObject.Find("BaseManager").GetComponent<BaseScript>();
         Debug.Log("basescript: " + bs);
         if (PhotonNetwork.IsMasterClient)
         {
             reloadEmptyBlocksFromOwnFiles();
-            mgs.inventory.materials = getDictionaryFromGlobalInventory();
+            MapGeneratorScript.inventory.materials = getDictionaryFromGlobalInventory();
         }
     }
     
@@ -61,7 +59,7 @@ public class FileManager
     public static void updateInventoryForEveryone()
     {
         CommunicationScript cs = GameObject.FindGameObjectWithTag("Player").GetComponent<CommunicationScript>();
-        Dictionary<string, int> materials = mgs.inventory.materials;
+        Dictionary<string, int> materials = MapGeneratorScript.inventory.materials;
 
         foreach (KeyValuePair<string, int> pair in materials)
         {
@@ -148,7 +146,7 @@ public class FileManager
     {
         Debug.Log("Writing inventory to file");
         File.WriteAllText(Application.dataPath + "/GameFiles/globalinventory.txt", "");
-        foreach (KeyValuePair<string, int> pair in mgs.inventory.materials)
+        foreach (KeyValuePair<string, int> pair in MapGeneratorScript.inventory.materials)
         {
             File.AppendAllText(Application.dataPath + "/GameFiles/globalinventory.txt", pair.Key + "/" + pair.Value + "\n");
         }

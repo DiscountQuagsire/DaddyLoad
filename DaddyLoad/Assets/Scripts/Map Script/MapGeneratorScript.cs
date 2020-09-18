@@ -6,19 +6,19 @@ using Photon.Pun;
 using UnityEngine;
 using Random = System.Random;
 
-public class MapGeneratorScript : MonoBehaviour
+public class MapGeneratorScript
 {
-    public int seed;
+    public static int seed;
 
-    public int chunkSize = 10;
-    public int sightHalfWidth = 23;
-    public int sightHalfHeight = 12;
+    public static int chunkSize = 10;
+    public static int sightHalfWidth = 23;
+    public static int sightHalfHeight = 12;
 
-    public ArrayList loadedChunkCoordinates = new ArrayList();
-    public BiomeManager bm;
-    public Inventory inventory = new Inventory();
+    public static ArrayList loadedChunkCoordinates = new ArrayList();
+    public static BiomeManager bm;
+    public static Inventory inventory = new Inventory();
 
-    public void Start()
+    public static void Start()
     {
         Debug.Log("MGS Start");
         bm = new BiomeManager();
@@ -26,7 +26,7 @@ public class MapGeneratorScript : MonoBehaviour
         FileManager.Start();
     }
 
-    public void Update()
+    public static void Update()
     {
         if (Input.GetKeyDown("i"))
         {
@@ -51,30 +51,30 @@ public class MapGeneratorScript : MonoBehaviour
 
         if (Input.GetKeyDown("l"))
         {
-            ProgressionScript ps = this.ps();
-            Debug.Log("listing all ship upgrades: " + ps.getThrusterLevel() + "/" + ps.getTemperatureShieldsLevel() + "/" 
-                + ps.getPressureShieldsLevel() + "/" + ps.getBodyworkLevel() + "/" + ps.getReactorLevel()
-                + "/" + ps.getCommRoom() + "/" + ps.getCircuitry() + "/" + ps.getWindows() + "/" + ps.getFlaps());
+            ProgressionScript psc = ps();
+            Debug.Log("listing all ship upgrades: " + psc.getThrusterLevel() + "/" + psc.getTemperatureShieldsLevel() + "/" 
+                + psc.getPressureShieldsLevel() + "/" + psc.getBodyworkLevel() + "/" + psc.getReactorLevel()
+                + "/" + psc.getCommRoom() + "/" + psc.getCircuitry() + "/" + psc.getWindows() + "/" + psc.getFlaps());
         }
 
     }
 
-    int index = 0;
-    public void FixedUpdate()
+    static int index = 0;
+    public static void FixedUpdate()
     {
         index++;
 
         if (index % 5 == 0)
         {
-            this.generateNearbyUnloadedChunks();
+            generateNearbyUnloadedChunks();
         }
         if (index % 50 == 0)
         {
-            this.unloadFarAwayChunks();
+            unloadFarAwayChunks();
         }
     }
 
-    private void unloadFarAwayChunks()
+    private static void unloadFarAwayChunks()
     { 
         Vector3 pos = GameObject.FindGameObjectWithTag("Player").transform.position;
         for (int i = 0; i < loadedChunkCoordinates.Count; i++)
@@ -82,14 +82,14 @@ public class MapGeneratorScript : MonoBehaviour
             Coordinate c = (Coordinate)loadedChunkCoordinates[i];
             if (c.isWithinSight(pos, sightHalfWidth*2, sightHalfHeight*2, chunkSize)) continue; // corrects for assymetry
             {                                                                                   // jestli jsem nic neposral
-                this.removeChunkAtNew(c);
+                removeChunkAtNew(c);
                 loadedChunkCoordinates.Remove(c);
                 i--;
             }
         }
     }
 
-    public void generateNearbyUnloadedChunks()
+    public static void generateNearbyUnloadedChunks()
     {
         Vector3 pos = GameObject.FindGameObjectWithTag("Player").transform.position;
         int drillX = (int)pos.x;
@@ -110,7 +110,7 @@ public class MapGeneratorScript : MonoBehaviour
         }
     }
 
-    public void removeChunkAtNew(Coordinate c)
+    public static void removeChunkAtNew(Coordinate c)
     {
         DateTime before = System.DateTime.Now;
 
@@ -124,7 +124,7 @@ public class MapGeneratorScript : MonoBehaviour
                 blocks[i].transform.position.y <= c.y &&
                 blocks[i].transform.position.y > c.y - chunkSize)
             {
-                Destroy(blocks[i]);
+                GameObject.Destroy(blocks[i]);
                 destroyedCount++;
                 if (destroyedCount >= chunkSize * chunkSize) break;
             }
@@ -133,7 +133,7 @@ public class MapGeneratorScript : MonoBehaviour
         //Debug.Log("time to unload chunk using new: " + c.x + ", " + c.y + ": " + (System.DateTime.Now - before).TotalMilliseconds);
     }
 
-    public void removeBlockAt(int x, int y)
+    public static void removeBlockAt(int x, int y)
     {
         //Debug.Log("Called removeblock at  " + x + ", " + y);
         GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
@@ -143,18 +143,18 @@ public class MapGeneratorScript : MonoBehaviour
             if (b.transform.position.x == x && b.transform.position.y == y)
             {
                 //Debug.Log("Found object");
-                Destroy(b);
+                GameObject.Destroy(b);
                 return;
             }
         }
     }
 
-    public void setSeed(int newSeed)
+    public static void setSeed(int newSeed)
     {
         bm.seed = newSeed;
     }
 
-    public ProgressionScript ps()
+    public static ProgressionScript ps()
     {
         return GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
     }
