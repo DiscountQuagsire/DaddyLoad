@@ -14,9 +14,7 @@ public class FileManager
 
     public static void Start()
     {
-        Debug.Log("FM Start");
         bs = GameObject.Find("BaseManager").GetComponent<BaseScript>();
-        Debug.Log("basescript: " + bs);
         if (PhotonNetwork.IsMasterClient)
         {
             reloadEmptyBlocksFromOwnFiles();
@@ -97,32 +95,10 @@ public class FileManager
     public static void loadShipUpgradesFromFile()
     {
         string[] input = File.ReadAllLines(Application.dataPath + "/GameFiles/shipinfo.txt");
-        loadShipUpgradesFromString(input[0]);
+        ProgressionScript.loadShipUpgradesFromString(input[0]);
     }
 
-    public static void loadShipUpgradesFromString(string input)
-    {
-        // thrusters/temp shields/pres shields/bodywork/reactor/comm room/circuitry/windows/flaps
-        // 0    1    2            3            4        5       6         7         8       9
-        string[] segmented = input.Split('/');
-        ProgressionScript ps = GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
-
-        ps.setThrusters(int.Parse(segmented[0]));
-        ps.setTempShields(int.Parse(segmented[1]));
-        ps.setPresShields(int.Parse(segmented[2]));
-        ps.setBodywork(int.Parse(segmented[3]));
-        ps.setReactor(int.Parse(segmented[4]));
-        ps.setCommRoom(int.Parse(segmented[5]) == 1 ? true : false);
-        ps.setCircuitry(int.Parse(segmented[6]) == 1 ? true : false);
-        ps.setWindows(int.Parse(segmented[7]) == 1 ? true : false);
-        ps.setFlaps(int.Parse(segmented[8]) == 1 ? true : false);
-
-        /*if (PhotonNetwork.IsMasterClient)  no fucking clue proc tady bylo tohle?
-        {
-            this.writeShipUpgradesToFile();
-        }*/
-    }
-
+  
     public static string getShipUpgradesString()
     {
         return File.ReadAllLines(Application.dataPath + "/GameFiles/shipinfo.txt")[0];
@@ -164,20 +140,7 @@ public class FileManager
     public static void writeShipUpgradesToFile() //tohle urcite
     {
         Debug.Log("Writing ship upgrades to file");
-        ProgressionScript ps = GameObject.FindGameObjectWithTag("Player").GetComponent<ProgressionScript>();
-        string output = "";
-
-        output += ps.getThrusterLevel()+"/";
-        output += ps.getTemperatureShieldsLevel() + "/";
-        output += ps.getPressureShieldsLevel() + "/";
-        output += ps.getBodyworkLevel() + "/";
-        output += ps.getReactorLevel() + "/";
-         
-        output += ps.getCommRoom() ? 1 + "/" : 0 +"/" ;
-        output += ps.getCircuitry() ? 1 + "/" : 0 + "/";
-        output += ps.getWindows() ? 1 + "/" : 0 + "/";
-        output += ps.getFlaps() ? 1 : 0;
-
+        string output = ProgressionScript.getShipUpgradesString();
         File.WriteAllText(Application.dataPath + "/GameFiles/shipinfo.txt", output);
     }
 

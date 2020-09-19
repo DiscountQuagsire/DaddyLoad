@@ -49,7 +49,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
     {
         Debug.Log("LSI fired; input: " + s);
 
-        FileManager.loadShipUpgradesFromString(s);
+        ProgressionScript.loadShipUpgradesFromString(s);
 
     }
 

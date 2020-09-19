@@ -16,7 +16,8 @@ public class BaseScript: MonoBehaviourPunCallbacks
 
     void Start()
     {
-        MapGeneratorScript.Start();
+        FileManager.Start();
+        ProgressionScript.Start();
         Debug.Log("BS Start");
         if (PhotonNetwork.IsMasterClient)
         {

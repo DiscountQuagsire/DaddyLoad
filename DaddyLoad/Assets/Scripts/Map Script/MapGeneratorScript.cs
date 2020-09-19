@@ -17,42 +17,12 @@ public class MapGeneratorScript
     public static ArrayList loadedChunkCoordinates = new ArrayList();
     public static Inventory inventory = new Inventory();
 
-    public static void Start()
-    {
-        Debug.Log("MGS Start");
-
-        FileManager.Start();
-    }
-
     public static void Update()
     {
-        if (Input.GetKeyDown("i"))
-        {
-            
-        }
-
-        if (Input.GetKeyDown("h"))
-        {
-            Debug.Log("Updating for everyone");
-            FileManager.updateInventoryForEveryone();
-        }
-
-        if (Input.GetKeyDown("k"))
-        {
-            FileManager.writeUnwrittenBlocksToFile();
-        }
-
-        if (Input.GetKeyDown("p"))
-        {
-            ps().upgradeThrusters();
-        }
 
         if (Input.GetKeyDown("l"))
         {
-            ProgressionScript psc = ps();
-            Debug.Log("listing all ship upgrades: " + psc.getThrusterLevel() + "/" + psc.getTemperatureShieldsLevel() + "/" 
-                + psc.getPressureShieldsLevel() + "/" + psc.getBodyworkLevel() + "/" + psc.getReactorLevel()
-                + "/" + psc.getCommRoom() + "/" + psc.getCircuitry() + "/" + psc.getWindows() + "/" + psc.getFlaps());
+            Debug.Log("listing all ship upgrades: " + ProgressionScript.getShipUpgradesString());
         }
 
     }
