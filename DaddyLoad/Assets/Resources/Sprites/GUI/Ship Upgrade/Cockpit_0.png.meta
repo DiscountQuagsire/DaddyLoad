@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: f9daced4f530e2141ac1ce7b1001ddd0
+guid: 167fdfd13aaf3fa42911f25288b2c9d6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6524931423319439797
-    second: Cockpit_Rapaired_0
-  - first:
-      213: -8396423345732566977
-    second: Cockpit_Rapaired_0
+      213: 3740244363088745738
+    second: Cockpit_1_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -52,7 +49,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 197, y: 592, z: 197, w: 71}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -93,7 +90,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cockpit_Rapaired_0
+      name: Cockpit_1_0
       rect:
         serializedVersion: 2
         x: 199
@@ -107,8 +104,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f3040d50479e97b80800000000000000
-      internalID: -8396423345732566977
+      spriteID: a05df0b7e6408e330800000000000000
+      internalID: 3740244363088745738
       vertices: []
       indices: 
       edges: []

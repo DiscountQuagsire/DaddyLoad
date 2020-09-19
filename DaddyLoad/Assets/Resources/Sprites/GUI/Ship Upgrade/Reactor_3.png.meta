@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2132cf397b3d1244eb4f733c01230a0c
+guid: 34228a2aebe5e1245bfc517a138c40f0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5179783288992709444
-    second: Reactor_Repaired_0
+      213: 6348344836317190245
+    second: Reactor_4_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -90,7 +90,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Reactor_Repaired_0
+      name: Reactor_4_0
       rect:
         serializedVersion: 2
         x: 214
@@ -104,8 +104,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb4c516da86bd18b0800000000000000
-      internalID: -5179783288992709444
+      spriteID: 5681f506ef9d91850800000000000000
+      internalID: 6348344836317190245
       vertices: []
       indices: 
       edges: []

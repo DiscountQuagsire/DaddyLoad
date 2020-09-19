@@ -2487,7 +2487,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -2474028442187810245, guid: 4032aa7dc44e9c64a8b7343a5d1104d9,
+  m_Sprite: {fileID: -1983578720474862815, guid: ce0815f424319fc4c90c5e5688918111,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -2597,13 +2597,14 @@ GameObject:
   - component: {fileID: 769021259}
   - component: {fileID: 769021258}
   - component: {fileID: 769021257}
+  - component: {fileID: 769021260}
   m_Layer: 0
   m_Name: Ship Upgrade UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &769021256
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2684,6 +2685,23 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &769021260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 769021255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6260f3f3d9047724baa0cdced7544c34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cockpit: {fileID: 883613528}
+  cockpit0: {fileID: 3740244363088745738, guid: 167fdfd13aaf3fa42911f25288b2c9d6,
+    type: 3}
+  cockpit1: {fileID: 6524931423319439797, guid: f9daced4f530e2141ac1ce7b1001ddd0,
+    type: 3}
 --- !u!1 &770116726
 GameObject:
   m_ObjectHideFlags: 0
@@ -3475,7 +3493,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 6524931423319439797, guid: f9daced4f530e2141ac1ce7b1001ddd0,
+  m_Sprite: {fileID: 3740244363088745738, guid: 167fdfd13aaf3fa42911f25288b2c9d6,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
