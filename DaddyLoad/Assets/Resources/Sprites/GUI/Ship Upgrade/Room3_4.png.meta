@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e02ebf66d17f37b45ad45cca9d6d78f2
+guid: 00b2fa46c3d6dd74e93294795a1dbfe6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6975799717658717845
-    second: Room5_0_0
+      213: -8178860938357929014
+    second: Room3_4_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -90,13 +90,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Room5_0_0
+      name: Room3_4_0
       rect:
         serializedVersion: 2
-        x: 386
-        y: 197
-        width: 94
-        height: 183
+        x: 78
+        y: 379
+        width: 203
+        height: 118
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -104,8 +104,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b619eacbd1bf03f90800000000000000
-      internalID: -6975799717658717845
+      spriteID: acb8bdd5f49de7e80800000000000000
+      internalID: -8178860938357929014
       vertices: []
       indices: 
       edges: []

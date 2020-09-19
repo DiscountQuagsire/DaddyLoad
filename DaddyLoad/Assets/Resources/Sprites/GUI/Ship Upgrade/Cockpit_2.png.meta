@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e02ebf66d17f37b45ad45cca9d6d78f2
+guid: a3c0bc37a7c578741a6dc27fb13ba4ad
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6975799717658717845
-    second: Room5_0_0
+      213: 6053452482568430948
+    second: Cockpit_2_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -90,13 +90,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Room5_0_0
+      name: Cockpit_2_0
       rect:
         serializedVersion: 2
-        x: 386
-        y: 197
-        width: 94
-        height: 183
+        x: 199
+        y: 591
+        width: 202
+        height: 239
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -104,8 +104,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b619eacbd1bf03f90800000000000000
-      internalID: -6975799717658717845
+      spriteID: 465a238d5fe220450800000000000000
+      internalID: 6053452482568430948
       vertices: []
       indices: 
       edges: []
