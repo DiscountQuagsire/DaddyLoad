@@ -21,7 +21,6 @@ public class CostScript
                 }
                 break;
             
-
             case "reactor":
                 switch (level)
                 {
@@ -37,7 +36,6 @@ public class CostScript
                 }
                 break;
 
-
             case "room1":
                 switch (level)
                 {
@@ -51,7 +49,6 @@ public class CostScript
                             output.addMaterial("silver", 4); break;
                 }
                 break;
-
 
             case "room2":
                 switch (level)
@@ -67,7 +64,6 @@ public class CostScript
                 }
                 break;
 
-
             case "room3":
                 switch (level)
                 {
@@ -81,7 +77,6 @@ public class CostScript
                         output.addMaterial("aluminum", 4); break;
                 }
                 break;
-
 
             case "room4":
                 switch (level)
@@ -97,7 +92,6 @@ public class CostScript
                 }
                 break;
 
-
             case "room5":
                 switch (level)
                 {
@@ -111,7 +105,6 @@ public class CostScript
                         output.addMaterial("ruby", 4); break;
                 }
                 break;
-
 
             case "room6":
                 switch (level)

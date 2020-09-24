@@ -50,7 +50,7 @@ public class CommunicationScript : MonoBehaviourPunCallbacks
         Debug.Log("LSI fired; input: " + s);
 
         ProgressionScript.loadShipUpgradesFromString(s);
-
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
 
     // locally called metoda ktera updatne 1 material v mgs.globalinventory
