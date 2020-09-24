@@ -20,6 +20,8 @@ public class FileManager
             reloadEmptyBlocksFromOwnFiles();
             MapGeneratorScript.inventory.materials = getDictionaryFromGlobalInventory();
         }
+
+
     }
     
     public static void reloadEmptyBlocksFromOwnFiles()
@@ -161,27 +163,54 @@ public class Inventory
     
     public Dictionary<string, int> materials = new Dictionary<string, int>();
     
-    public void addMaterial(string material)
+    public void addMaterial(string material, int amount)
     {
         if (materials.ContainsKey(material))
         {
-            materials[material] = materials[material] + 1;
+            materials[material] = materials[material] + amount;
         }
         else
         {
-            materials.Add(material, 1);
+            materials.Add(material, amount);
         }
 
     }
 
-    public void listInventory()
+    public string listInventory()
     {
-        string output = "Inventory: ";
+        string output = "";
         foreach (KeyValuePair<string, int> pair in materials)
         {
-            output += pair.Key + ": " + pair.Value + "  //  ";
+            output += pair.Value + " " + pair.Key + ", ";
         }
-        Debug.Log(output);
+        if (output.Length < 2) return "";
+        return output.Substring(0, output.Length - 2);
+    }
+
+    public bool containsInventory(Inventory comparison)
+    {
+
+        foreach (KeyValuePair<string, int> pair in comparison.materials)
+        {
+            if (!materials.ContainsKey(pair.Key)) return false;
+            if (materials[pair.Key] < pair.Value) return false;
+        }
+
+        return true;
+    }
+
+    public void removeInventoryContents(Inventory toRemove)
+    {
+        foreach (KeyValuePair<string, int> pair in toRemove.materials)
+        {
+            if (!materials.ContainsKey(pair.Key)) //cannot happen
+            {
+                Debug.Log("Error in remove inventory contents");
+                return;
+            }
+            materials[pair.Key] = materials[pair.Key] - pair.Value;
+        }
+
     }
 
 

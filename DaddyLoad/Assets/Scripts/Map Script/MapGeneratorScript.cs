@@ -8,7 +8,7 @@ using Random = System.Random;
 
 public class MapGeneratorScript
 {
-    public static int seed;
+    public static int seed = 156156;
 
     public static int chunkSize = 10;
     public static int sightHalfWidth = 23;
@@ -16,16 +16,6 @@ public class MapGeneratorScript
 
     public static ArrayList loadedChunkCoordinates = new ArrayList();
     public static Inventory inventory = new Inventory();
-
-    public static void Update()
-    {
-
-        if (Input.GetKeyDown("l"))
-        {
-            Debug.Log("listing all ship upgrades: " + ProgressionScript.getShipUpgradesString());
-        }
-
-    }
 
     static int index = 0;
     public static void FixedUpdate()
@@ -40,6 +30,7 @@ public class MapGeneratorScript
         {
             unloadFarAwayChunks();
         }
+
     }
 
     private static void unloadFarAwayChunks()

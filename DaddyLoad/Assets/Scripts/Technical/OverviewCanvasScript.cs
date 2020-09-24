@@ -36,7 +36,6 @@ public class OverviewCanvasScript : MonoBehaviour
         foreach(GameObject go in objects)
         {
             Destroy(go);
-            Debug.Log("destroying go");
         }
 
         Debug.Log("reload fired");

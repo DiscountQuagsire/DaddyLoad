@@ -31,6 +31,7 @@ public class BaseScript: MonoBehaviourPunCallbacks
         saveButton.GetComponent<Button>().onClick.AddListener(FileManager.writeDownInventory);
         saveButton.GetComponent<Button>().onClick.AddListener(FileManager.writeShipUpgradesToFile);
         saveButton.GetComponent<Button>().onClick.AddListener(FileManager.writeUnwrittenBlocksToFile);
+
     }
 
     public void addBase(float x)

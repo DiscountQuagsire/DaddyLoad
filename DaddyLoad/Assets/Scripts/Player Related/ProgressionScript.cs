@@ -14,7 +14,6 @@ public class ProgressionScript
         }
     }
 
-
     public static string getShipUpgradesString()
     {
         string output = "";
@@ -43,8 +42,8 @@ public class ProgressionScript
 
         string[] segmented = input.Split('/');
 
-        setReactor(int.Parse(segmented[0]));
-        setCockpit(int.Parse(segmented[1]));
+        setCockpit(int.Parse(segmented[0]));
+        setReactor(int.Parse(segmented[1]));
         setRoom1(int.Parse(segmented[2]));
         setRoom2(int.Parse(segmented[3]));
         setRoom3(int.Parse(segmented[4]));
@@ -75,43 +74,108 @@ public class ProgressionScript
 
     public static void upgradeCockpit()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("cockpit", cockpit+1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("cockpit", cockpit + 1));
+
         setCockpit(cockpit + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
     public static void upgradeReactor()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("reactor", reactor + 1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("reactor", reactor + 1));
+
         setReactor(reactor + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
     public static void upgradeRoom1()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("room1", room1 + 1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("room1", room1 + 1));
+
         setRoom1(room1 + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
     public static void upgradeRoom2()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("room2", room2 + 1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("room2", room2 + 1));
+
         setRoom2(room2 + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
     public static void upgradeRoom3()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("room3", room3 + 1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("room3", room3 + 1));
+
         setRoom3(room3 + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
     public static void upgradeRoom4()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("room4", room4 + 1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("room4", room4 + 1));
+
         setRoom4(room4 + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
     public static void upgradeRoom5()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("room5", room5 + 1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("room5", room5 + 1));
+
         setRoom5(room5 + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
     }
     public static void upgradeRoom6()
     {
+        if (!MapGeneratorScript.inventory.containsInventory(CostScript.getCost("room6", room6 + 1)))
+        {
+            Debug.Log("not enough materials in upgrade; this should never happen");
+            return;
+        }
+        MapGeneratorScript.inventory.removeInventoryContents(CostScript.getCost("room6", room6 + 1));
+
         setRoom6(room6 + 1);
         sendShipUpgradeInfoToEverybody();
+        GameObject.Find("Ship Upgrade UI").GetComponent<ShipUIScript>().reloadSprites();
+
     }
 
     /// 

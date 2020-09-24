@@ -32,7 +32,7 @@ public class Block : MonoBehaviourPunCallbacks
         ("receiveMessage", RpcTarget.All, "blockdestroy/" + resourceName + "/" + (int)transform.position.x + "/" + (int)transform.position.y);
         if (resourceName != "")
         {
-            MapGeneratorScript.inventory.addMaterial(resourceName);
+            MapGeneratorScript.inventory.addMaterial(resourceName, 1);
         }
     }
 

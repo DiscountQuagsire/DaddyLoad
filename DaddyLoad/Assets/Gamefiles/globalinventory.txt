@@ -1,4 +1,9 @@
-gold/25
-bronze/3
-plastic/2
+gold/26
+bronze/4
+plastic/500
 iron/9
+copper/500
+silver/500
+pinkore/1000
+aluminum/1000
+emerald/500
