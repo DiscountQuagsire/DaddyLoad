@@ -7,3 +7,4 @@ silver/500
 pinkore/1000
 aluminum/1000
 emerald/500
+ruby/500
